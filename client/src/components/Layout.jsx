@@ -15,6 +15,7 @@ export default function Layout() {
           <nav className="nav" aria-label="Main">
             <NavLink to="/" end>Feed</NavLink>
             <NavLink to="/posts/new">Post an item</NavLink>
+            <NavLink to="/claims">Claims</NavLink>
           </nav>
           <div className="user-chip">
             <span className="avatar" aria-hidden="true">{initials}</span>
