@@ -49,7 +49,10 @@ beforeAll(async () => {
   const { rows } = await query(`SELECT user_id, email FROM users WHERE email LIKE '%@lau.edu'`);
   for (const r of rows) uid[r.email.split('.')[0]] = r.user_id;
 });
-afterAll(() => pool.end());
+afterAll(async () => {
+  await require('../src/lib/events').settle(); // let Smart Match finish before closing the pool
+  await pool.end();
+});
 
 describe('TS-FR-6 Claims and Ownership Verification', () => {
   test('TC-FR-6.1-V claim submitted with an answer', async () => {

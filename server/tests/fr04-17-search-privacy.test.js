@@ -33,7 +33,10 @@ beforeAll(async () => {
   ids.idCard = await post(omar, 'found', { title: 'Student ID card', categoryId: R.idCard, locationId: R.nicol, date: today(),
     description: 'ID number 20231234 5678 on the back', ...finder }, [await jpeg()]);
 });
-afterAll(() => pool.end());
+afterAll(async () => {
+  await require('../src/lib/events').settle(); // let Smart Match finish before closing the pool
+  await pool.end();
+});
 
 const titles = (res) => res.body.items.map((i) => i.title);
 

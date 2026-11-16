@@ -8,10 +8,12 @@ import NewPost from './pages/NewPost';
 import EditPost from './pages/EditPost';
 import Claims from './pages/Claims';
 import ClaimDetail from './pages/ClaimDetail';
+import MatchSettings from './pages/MatchSettings';
 
 export default function App() {
   const { user } = useAuth();
   if (user === undefined) return null; // checking the session
+  const isAdmin = ['ORG_ADMIN', 'PLATFORM_ADMIN'].includes(user?.role);
 
   if (!user) {
     return (
@@ -31,6 +33,7 @@ export default function App() {
         <Route path="/posts/:id/edit" element={<EditPost />} />
         <Route path="/claims" element={<Claims />} />
         <Route path="/claims/:id" element={<ClaimDetail />} />
+        {isAdmin && <Route path="/admin/matching" element={<MatchSettings />} />}
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router';
 import { api, photoUrl } from '../api';
 import { formatDate, STATUS_LABEL, timeAgo } from '../format';
 import ClaimPanel from '../components/ClaimPanel';
+import MatchPanel from '../components/MatchPanel';
 
 /* FR-4.7, FR-4.8, FR-3.8: detail page with the public information of a post. */
 export default function PostDetail() {
@@ -106,6 +107,7 @@ export default function PostDetail() {
             </div>
           )}
 
+          {post.isOwner && post.status === 'OPEN' && <MatchPanel post={post} />}
           <ClaimPanel key={`${post.id}-${post.status}`} post={post} />
         </div>
       </div>
