@@ -79,6 +79,7 @@ Any other `@lau.edu` or `@lau.edu.lb` address creates a new account on first sig
 client/                 React application
   src/pages/            One component per screen
   src/components/       Shared components (layout, form fields, post cards)
+  src/modules/<name>/   Self-contained feature modules picked up by registry.js
   src/api.js            Fetch wrapper for the REST API
 server/
   src/app.js            Express application and route mounting
@@ -88,6 +89,15 @@ server/
   src/db/migrations/    Numbered SQL migrations
   tests/                Jest tests, one file per requirement group
 ```
+
+## Adding a module
+
+Modules are discovered automatically, so a new module only adds files and never edits a shared list:
+
+- **Server:** `server/src/modules/<name>/routes.js` is mounted under `/api`; an optional `jobs.js` exports background jobs (`[{ name, everyMs, run }]`).  Modules talk to each other through events (`lib/events.js`), for example `post.published` or `handover.completed`.
+- **Client:** `client/src/modules/<name>/index.jsx` exports its routes, nav links, top-bar items and panels for the post and claim pages (see `client/src/modules/registry.js`).  Keep the module's styles in its own CSS file imported by `index.jsx`.
+- **Database:** add a migration with the module's number range, for example `010_messaging.sql`; migrations run once each, in any order.
+- **Tests:** add `server/tests/frNN-<name>.test.js` with tests named after the Phase III test cases.
 
 ## How we work
 

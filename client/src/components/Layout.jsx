@@ -1,5 +1,6 @@
 import { Link, NavLink, Outlet } from 'react-router';
 import { useAuth } from '../auth';
+import { headerItems, moduleNav } from '../modules/registry';
 
 export default function Layout() {
   const { user, signOut } = useAuth();
@@ -17,8 +18,10 @@ export default function Layout() {
             <NavLink to="/posts/new">Post an item</NavLink>
             <NavLink to="/claims">Claims</NavLink>
             {['ORG_ADMIN', 'PLATFORM_ADMIN'].includes(user.role) && <NavLink to="/admin/matching">Smart Match</NavLink>}
+            {moduleNav(user).map((n) => <NavLink key={n.to} to={n.to}>{n.label}</NavLink>)}
           </nav>
           <div className="user-chip">
+            {headerItems().map((Item, i) => <Item key={i} />)}
             <span className="avatar" aria-hidden="true">{initials}</span>
             <span>{user.displayName}</span>
             <button type="button" className="btn secondary small" onClick={signOut}>Sign out</button>
