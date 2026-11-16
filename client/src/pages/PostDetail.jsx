@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { api, photoUrl } from '../api';
 import { formatDate, STATUS_LABEL, timeAgo } from '../format';
+import ClaimPanel from '../components/ClaimPanel';
 
 /* FR-4.7, FR-4.8, FR-3.8: detail page with the public information of a post. */
 export default function PostDetail() {
@@ -104,6 +105,8 @@ export default function PostDetail() {
               <button type="button" className="btn danger" onClick={remove}>Delete</button>
             </div>
           )}
+
+          <ClaimPanel key={`${post.id}-${post.status}`} post={post} />
         </div>
       </div>
     </>

@@ -199,3 +199,27 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--b
   .row, .row3 { grid-template-columns: 1fr; }
   main { padding: 1rem 1rem 3rem; }
 }
+
+/* ---------- claims and handover ---------- */
+.section-title { font-size: 1rem; margin: 1.4rem 0 0.6rem; color: var(--navy); }
+.claim-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+.claim-list a {
+  display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; padding: 0.75rem 1rem;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--navy); text-decoration: none;
+}
+.claim-list a:hover { border-color: var(--blue); }
+.claim-list .who { font-weight: 600; }
+.claim-list .sub { color: var(--muted); font-size: 0.85rem; }
+.answers { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin: 1rem 0; }
+.answers > div { border: 1px solid var(--line); border-radius: 12px; padding: 0.8rem 1rem; }
+.answers .label { display: block; font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.25rem; }
+.answers .value { font-size: 1.05rem; font-weight: 600; color: var(--navy); }
+.answers .expected { background: var(--green-soft); border-color: transparent; }
+.handover-code {
+  font-size: 2.6rem; font-weight: 700; letter-spacing: 0.5em; padding-left: 0.5em; text-align: center;
+  color: var(--navy); background: var(--blue-soft); border-radius: 14px; padding-block: 0.8rem; margin: 0.6rem 0;
+}
+.inline-form { display: flex; gap: 0.5rem; align-items: flex-start; flex-wrap: wrap; }
+.inline-form .field { flex: 1 1 12rem; margin-bottom: 0; }
+.subpanel { border-top: 1px solid var(--line); margin-top: 1.2rem; padding-top: 1.2rem; }
+@media (max-width: 640px) { .answers { grid-template-columns: 1fr; } }
