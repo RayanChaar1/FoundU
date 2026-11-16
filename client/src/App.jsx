@@ -9,6 +9,7 @@ import EditPost from './pages/EditPost';
 import Claims from './pages/Claims';
 import ClaimDetail from './pages/ClaimDetail';
 import MatchSettings from './pages/MatchSettings';
+import { moduleRoutes } from './modules/registry';
 
 export default function App() {
   const { user } = useAuth();
@@ -34,6 +35,7 @@ export default function App() {
         <Route path="/claims" element={<Claims />} />
         <Route path="/claims/:id" element={<ClaimDetail />} />
         {isAdmin && <Route path="/admin/matching" element={<MatchSettings />} />}
+        {moduleRoutes(user).map((r) => <Route key={r.path} path={r.path} element={r.element} />)}
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

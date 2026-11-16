@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router';
 import { api } from '../api';
 import { claimLabel, formatDate, timeAgo } from '../format';
 import Field from '../components/Field';
+import { claimPanels } from '../modules/registry';
 
 /* FR-6.7 to FR-6.12 and FR-9.3 to FR-9.10: review a claim, show the handover code, confirm or cancel the return. */
 export default function ClaimDetail() {
@@ -148,6 +149,7 @@ export default function ClaimDetail() {
           </form>
         )}
       </div>
+      {claimPanels().map((Panel, i) => <Panel key={i} claim={claim} reload={load} />)}
     </>
   );
 }

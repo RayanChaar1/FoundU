@@ -1,6 +1,8 @@
-/* Background jobs: notification emails every 20 seconds (FR-8.2) and closing returned posts (FR-9.11). */
-const { sendPendingEmails } = require('./modules/notifications/service');
-const { closeReturnedPosts } = require('./modules/claims/service');
+/* Background jobs.  Every module folder may export a jobs.js: [{ name, everyMs, run }]. */
+const fs = require('fs');
+const path = require('path');
+
+const MODULES = path.join(__dirname, 'modules');
 
 function every(ms, name, job) {
   let running = false;
@@ -20,8 +22,11 @@ function every(ms, name, job) {
 }
 
 function startJobs() {
-  every(20 * 1000, 'emails', sendPendingEmails);
-  every(60 * 60 * 1000, 'close-returned', () => closeReturnedPosts()); // hourly, so a post closes within the 7th day
+  for (const name of fs.readdirSync(MODULES).sort()) {
+    const file = path.join(MODULES, name, 'jobs.js');
+    if (!fs.existsSync(file)) continue;
+    for (const job of require(file)) every(job.everyMs, `${name}/${job.name}`, job.run);
+  }
 }
 
 module.exports = { startJobs };

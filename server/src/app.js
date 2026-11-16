@@ -1,4 +1,6 @@
 /* Interface layer (Figure 6): the Express REST API. */
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
@@ -6,6 +8,8 @@ const rateLimit = require('express-rate-limit');
 const config = require('./config');
 const { loadUser } = require('./middleware/auth');
 const { errorHandler } = require('./middleware/error');
+
+const MODULES = path.join(__dirname, 'modules');
 
 function createApp() {
   const app = express();
@@ -30,13 +34,11 @@ function createApp() {
   );
 
   app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
-  app.use('/api', require('./modules/accounts/routes'));
-  app.use('/api', require('./modules/reference/routes'));
-  app.use('/api', require('./modules/posts/routes'));
-  app.use('/api', require('./modules/search/routes'));
-  app.use('/api', require('./modules/claims/routes'));
-  app.use('/api', require('./modules/matching/routes'));
-  app.use('/api', require('./modules/notifications/routes'));
+  // Every module folder with a routes.js is mounted automatically, so a new module only adds files
+  for (const name of fs.readdirSync(MODULES).sort()) {
+    const routes = path.join(MODULES, name, 'routes.js');
+    if (fs.existsSync(routes)) app.use('/api', require(routes));
+  }
 
   app.use('/api', (req, res) => res.status(404).json({ error: 'Not found.' }));
   app.use(errorHandler);
