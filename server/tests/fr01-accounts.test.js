@@ -2,7 +2,10 @@
 const { app, request, lastCode, signIn } = require('./helpers');
 const { pool, query } = require('../src/db/pool');
 
-afterAll(() => pool.end());
+afterAll(async () => {
+  await require('../src/lib/events').settle(); // let Smart Match finish before closing the pool
+  await pool.end();
+});
 
 describe('TS-FR-1', () => {
   test('TC-FR-1.1-V: member of a registered organization signs in', async () => {

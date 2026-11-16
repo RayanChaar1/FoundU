@@ -136,6 +136,7 @@ async function edit(user, id, input) {
     }
     return p;
   });
+  events.emit('post.updated', updated); // FR-5.7: Smart Match runs again after an edit
   return updated;
 }
 

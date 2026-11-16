@@ -16,6 +16,7 @@ export default function Layout() {
             <NavLink to="/" end>Feed</NavLink>
             <NavLink to="/posts/new">Post an item</NavLink>
             <NavLink to="/claims">Claims</NavLink>
+            {['ORG_ADMIN', 'PLATFORM_ADMIN'].includes(user.role) && <NavLink to="/admin/matching">Smart Match</NavLink>}
           </nav>
           <div className="user-chip">
             <span className="avatar" aria-hidden="true">{initials}</span>

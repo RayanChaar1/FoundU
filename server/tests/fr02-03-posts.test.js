@@ -15,7 +15,10 @@ beforeAll(async () => {
   R = await ref();
   [sara, omar, lea] = await Promise.all(['sara.k@lau.edu', 'omar.h@lau.edu', 'lea.n@lau.edu'].map(signIn));
 });
-afterAll(() => pool.end());
+afterAll(async () => {
+  await require('../src/lib/events').settle(); // let Smart Match finish before closing the pool
+  await pool.end();
+});
 
 const lost = (agent, fields, files = []) => {
   const req = agent.post('/api/posts/lost');

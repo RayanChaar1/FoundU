@@ -35,6 +35,7 @@ function createApp() {
   app.use('/api', require('./modules/posts/routes'));
   app.use('/api', require('./modules/search/routes'));
   app.use('/api', require('./modules/claims/routes'));
+  app.use('/api', require('./modules/matching/routes'));
   app.use('/api', require('./modules/notifications/routes'));
 
   app.use('/api', (req, res) => res.status(404).json({ error: 'Not found.' }));
