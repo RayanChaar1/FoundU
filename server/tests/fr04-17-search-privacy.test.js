@@ -73,8 +73,13 @@ describe('TS-FR-4 Search and Browsing', () => {
 
   test('TC-FR-4.7-V / TC-FR-4.8-V: detail page with public information', async () => {
     const res = await lea.get(`/api/posts/${ids.wallet}`).expect(200);
+    // Omar's badges depend on the returns of the other test files, so they are compared with the database
+    const { rows: badges } = await query(
+      `SELECT b.code, b.name FROM user_badges ub JOIN badges b USING (badge_id) JOIN users u USING (user_id)
+        WHERE u.email = 'omar.h@lau.edu' ORDER BY ub.awarded_at`,
+    );
     expect(res.body.post).toMatchObject({ title: 'Brown leather wallet', building: 'Nicol Hall', campus: 'Beirut',
-      poster: { displayName: 'Omar H.', badges: [] } });
+      poster: { displayName: 'Omar H.', badges } });
   });
 
   test('TC-FR-4.9-V: results come in pages of 20', async () => {
