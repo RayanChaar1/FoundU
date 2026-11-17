@@ -32,7 +32,9 @@ const found = (agent, fields, files = []) => {
   for (const [i, f] of files.entries()) req.attach('photos', f, `photo${i}.jpg`);
   return req;
 };
-const lostPhone = () => ({ title: 'Black iPhone 14', categoryId: R.phone, locationId: R.nicol, date: today(), time: '10:30',
+/** Yesterday, so the fixed time of day is never in the future, whatever time the tests run. */
+const yesterday = () => new Date(Date.now() - 864e5).toISOString().slice(0, 10);
+const lostPhone = () => ({ title: 'Black iPhone 14', categoryId: R.phone, locationId: R.nicol, date: yesterday(), time: '10:30',
   description: 'Black iPhone 14 with a blue case, lost near the main entrance.' });
 const foundPhone = () => ({ ...lostPhone(), title: 'Black phone found', whereabouts: 'FINDER',
   verificationQuestion: 'What is on the lock screen?', verificationAnswer: 'A dog' });
