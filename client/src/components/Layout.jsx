@@ -23,7 +23,7 @@ export default function Layout() {
           <div className="user-chip">
             {headerItems().map((Item, i) => <Item key={i} />)}
             <span className="avatar" aria-hidden="true">{initials}</span>
-            <span>{user.displayName}</span>
+            <span className="user-name">{user.displayName}</span>
             <button type="button" className="btn secondary small" onClick={signOut}>Sign out</button>
           </div>
         </div>
