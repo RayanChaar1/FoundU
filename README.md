@@ -3,7 +3,7 @@
 Smart, secure lost and found for every campus.  FoundU is a web platform where members of an organization post lost and found items, get notified of likely matches, prove ownership through a verification question, and complete the handover with a one-time code.
 
 CSC490 Software Engineering, Lebanese American University, Fall 2026 (Dr. Ramzi Haraty).
-Team AJMR²: Rayan El Chaar, Jean-Marie Agha, Ramez Naba, Adam Jaat, Mohammad Moubarak.
+Team AJMR²: Rayan El Chaar, Jean-Marie Agha, Ramez Naba, Adam Jaat, Mohamad Moubarak.
 
 ## Stack
 
