@@ -25,7 +25,7 @@ function createApp() {
     '/api',
     rateLimit({
       windowMs: 60 * 1000,
-      limit: config.isTest ? 10000 : 100,
+      limit: config.rateLimitPerMinute,
       keyGenerator: (req) => (req.user ? `u${req.user.user_id}` : rateLimit.ipKeyGenerator(req.ip)),
       standardHeaders: 'draft-8',
       legacyHeaders: false,

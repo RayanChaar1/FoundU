@@ -61,13 +61,15 @@ const ROLE_SETS = {
 
 function requireRole(set) {
   const roles = ROLE_SETS[set];
-  return (req, res, next) => {
+  const guard = (req, res, next) => {
     if (!req.user) return next(unauthorized());
     if (!roles.includes(req.user.role)) return next(forbidden());
     next();
   };
+  guard.roleSet = set; // lets the NFR-12 test list every guarded route and its roles
+  return guard;
 }
 
 const isStaff = (user) => ROLE_SETS.staff.includes(user?.role);
 
-module.exports = { loadUser, requireAuth, requireRole, startSession, endSession, isStaff, COOKIE };
+module.exports = { loadUser, requireAuth, requireRole, startSession, endSession, isStaff, cookieOptions, ROLE_SETS, COOKIE };
