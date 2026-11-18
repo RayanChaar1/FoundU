@@ -73,6 +73,28 @@ Any other `@lau.edu` or `@lau.edu.lb` address creates a new account on first sig
 | `npm run db:seed` | Replace all data with the demo organizations, users and categories |
 | `npm run db:reset` | Drop every table, migrate again and seed |
 
+## Security and performance
+
+The results of the security and performance checks are in [docs/security-performance.md](docs/security-performance.md).
+
+**HTTPS (NFR-9).**  The demo runs over HTTP on the laptop.  To serve the API over HTTPS (TLS 1.2 or later only), set `TLS_CERT` and `TLS_KEY` in `server/.env` to a certificate and its key.  A certificate for local tests:
+
+```bash
+openssl req -x509 -newkey rsa:2048 -nodes -keyout key.pem -out cert.pem -days 30 -subj "/CN=localhost"
+```
+
+**Performance (NFR-1 to NFR-3).**  The scripts in `server/perf/` fill a separate database with 50,000 posts and measure searches, Smart Match and 200 users browsing at once.  The seed refuses any database whose name does not contain `perf`.
+
+```bash
+createdb -U postgres foundu_perf
+```
+
+```bash
+cd server && export DATABASE_URL=postgres://postgres@localhost:5432/foundu_perf && npm run db:migrate && npm run db:seed && npm run perf:seed
+```
+
+Then start the API on that database with `PORT=4100 node --env-file=.env src/server.js` (same `DATABASE_URL`, which takes precedence over `.env`) and, in a second terminal with the same `DATABASE_URL`, run `npm run perf:search`, `npm run perf:match` (50 posts) and `npm run perf:load -- 200 900` (200 users for 15 minutes).
+
 ## Project structure
 
 ```
@@ -88,6 +110,7 @@ server/
   src/middleware/       Authentication, roles and error handling
   src/db/migrations/    Numbered SQL migrations
   tests/                Jest tests, one file per requirement group
+  perf/                 Performance data and load scripts (NFR-1 to NFR-3)
 ```
 
 ## Adding a module

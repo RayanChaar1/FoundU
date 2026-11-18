@@ -101,7 +101,7 @@ export default function Feed() {
           <form className="searchbar" role="search" onSubmit={(e) => { e.preventDefault(); set({ q: q.trim() }); }}>
             <label htmlFor="q" className="sr-only">Search posts</label>
             <input id="q" type="search" placeholder="Search by keyword, e.g. black wallet, AirPods, keys…" value={q}
-              onChange={(e) => setQ(e.target.value)} />
+              maxLength={100} onChange={(e) => setQ(e.target.value)} />
             <button className="btn">Search</button>
           </form>
 

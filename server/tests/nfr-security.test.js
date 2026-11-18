@@ -1,4 +1,4 @@
-/* TS-NFR-10 to TS-NFR-13 Security and privacy, checked on the whole API.
+/* TS-NFR-10 to TS-NFR-13 Security and privacy, checked on the whole API, and the overload answer of NFR-1.
    The route sweeps read the routes from the application itself, so a route added by any module is covered. */
 const jwt = require('jsonwebtoken');
 const config = require('../src/config');
@@ -295,6 +295,9 @@ describe('NFR-11 attacks', () => {
     // LIKE wildcards are escaped: "%" finds only titles that contain "%"
     const percent = await as.lea.get('/api/posts').query({ q: '%' }).expect(200);
     expect(percent.body.items.every((p) => p.title.includes('%'))).toBe(true);
+    // TC-NFR-2-D: an over-long query gets a clear message instead of a slow search
+    const long = await as.lea.get('/api/posts').query({ q: 'wallet '.repeat(30) }).expect(400);
+    expect(long.body.fields.q).toBe('Search with at most 100 characters.');
     expect((await query('SELECT count(*)::int AS n FROM posts')).rows[0].n).toBeGreaterThan(0);
   });
 
@@ -326,6 +329,33 @@ describe('NFR-11 attacks', () => {
     config.isTest = true;
     process.env.NODE_ENV = env;
     expect(production).toMatchObject({ httpOnly: true, sameSite: 'lax', secure: true });
+  });
+});
+
+describe('NFR-1 overload', () => {
+  test('TC-NFR-1-D: beyond the requests it can handle at once, the server answers 503 with a retry message, then recovers', async () => {
+    const before = config.maxInFlight;
+    config.maxInFlight = 2;
+    const busy = createApp();
+    config.maxInFlight = before;
+    const cookie = `foundu_session=${jwt.sign({ sub: uid.lea }, config.jwtSecret, { expiresIn: '30m' })}`;
+    const server = busy.listen(0);
+    const at = `http://127.0.0.1:${server.address().port}/api/posts`;
+    try {
+      const burst = await Promise.all(Array.from({ length: 30 }, async () => {
+        const res = await fetch(at, { headers: { cookie } });
+        return { status: res.status, retryAfter: res.headers.get('retry-after'), body: await res.json() };
+      }));
+      const refused = burst.filter((r) => r.status === 503);
+      expect(burst.filter((r) => r.status === 200).length).toBeGreaterThanOrEqual(2);
+      expect(refused.length).toBeGreaterThan(0);
+      expect(burst.every((r) => [200, 503].includes(r.status))).toBe(true);
+      expect(refused[0].body.error).toBe('FoundU is very busy.  Try again in a few seconds.');
+      expect(refused[0].retryAfter).toBe('5');
+      expect((await fetch(at, { headers: { cookie } })).status).toBe(200); // recovers once the load drops
+    } finally {
+      server.close();
+    }
   });
 });
 

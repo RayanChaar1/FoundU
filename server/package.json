@@ -10,7 +10,11 @@
     "db:migrate": "node --env-file-if-exists=.env src/db/migrate.js",
     "db:seed": "node --env-file-if-exists=.env src/db/seed.js",
     "db:reset": "node --env-file-if-exists=.env src/db/migrate.js --reset && node --env-file-if-exists=.env src/db/seed.js",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "perf:seed": "node --env-file-if-exists=.env perf/seed.js",
+    "perf:search": "node --env-file-if-exists=.env perf/search.js",
+    "perf:match": "node --env-file-if-exists=.env perf/match.js",
+    "perf:load": "node --env-file-if-exists=.env perf/load.js"
   },
   "jest": {
     "testEnvironment": "node",

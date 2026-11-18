@@ -13,7 +13,7 @@ const optionalId = id.optional().or(z.literal('').transform(() => undefined));
 const day = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().or(z.literal('').transform(() => undefined));
 
 const searchSchema = z.object({
-  q: z.string().trim().max(100).optional().transform((v) => v || undefined),
+  q: z.string().trim().max(100, 'Search with at most 100 characters.').optional().transform((v) => v || undefined),
   type: z.enum(['LOST', 'FOUND']).optional().or(z.literal('').transform(() => undefined)),
   status: z.enum(['OPEN', 'CLAIMED', 'RETURNED', 'CLOSED']).optional().or(z.literal('').transform(() => undefined)),
   categoryId: optionalId,
