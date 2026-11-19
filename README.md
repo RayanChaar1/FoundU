@@ -63,6 +63,16 @@ With `SMTP_HOST` empty, emails are written to `server/outbox/` instead of being 
 
 Any other `@lau.edu` or `@lau.edu.lb` address creates a new account on first sign-in.
 
+### Single sign-on during development
+
+`server/dev/idp.js` is a small OpenID Connect provider that plays the part of LAU's identity provider (FR-1.2, NFR-25.1).
+
+1. Start it with `npm run idp --workspace server`.  It listens on http://localhost:4001.
+2. Sign in as maya.azar@lau.edu and open Admin › Organization › Single sign-on.  Enter the issuer `http://localhost:4001`, the client ID `foundu` and the client secret `dev-secret`, then choose **Test and connect**.
+3. Sign out.  LAU addresses now get a **Sign in with Lebanese American University** button instead of a code.  On the provider's page, any LAU address signs in with the password `demo-password`.
+
+Choose **Disconnect** on the same panel to go back to sign-in codes.
+
 ## Scripts
 
 | Command | Purpose |
@@ -72,6 +82,7 @@ Any other `@lau.edu` or `@lau.edu.lb` address creates a new account on first sig
 | `npm run db:migrate` | Apply new migrations from `server/src/db/migrations/` |
 | `npm run db:seed` | Replace all data with the demo organizations, users and categories |
 | `npm run db:reset` | Drop every table, migrate again and seed |
+| `npm run idp --workspace server` | Start the development identity provider for single sign-on (port 4001) |
 
 ## Security and performance
 

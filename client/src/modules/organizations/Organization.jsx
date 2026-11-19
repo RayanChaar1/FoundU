@@ -138,7 +138,8 @@ function SingleSignOn() {
         <span className={`badge ${sso.enabled ? 'status' : 'sensitive'}`}>{sso.enabled ? 'Connected' : 'Not connected'}</span>
       </div>
       <p className="hint">Connect your own OpenID Connect identity provider (for example Microsoft Entra ID or Google Workspace).
-        FoundU tests the settings with a sign-in to your provider and keeps them only if the test succeeds.</p>
+        FoundU tests the settings with a sign-in to your provider and keeps them only if the test succeeds.
+        Register this redirect address at your provider: <code style={{ overflowWrap: 'anywhere' }}>{sso.redirectUri}</code></p>
       <Notice notice={notice} />
       <Field id="sso-issuer" label="Issuer URL" error={errors.issuer}>
         <input id="sso-issuer" value={form.issuer} placeholder="https://login.microsoftonline.com/<tenant>/v2.0" onChange={set('issuer')} />

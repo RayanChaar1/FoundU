@@ -228,7 +228,8 @@ describe('TS-FR-18 Organization management', () => {
 
   test('TC-FR-18.8-V identity provider connected', async () => {
     const res = await maya.put('/api/org/sso').send({ issuer, clientId: 'foundu', clientSecret: 'right-secret' }).expect(200);
-    expect(res.body).toMatchObject({ issuer, clientId: 'foundu', hasSecret: true, enabled: true });
+    expect(res.body).toMatchObject({ issuer, clientId: 'foundu', hasSecret: true, enabled: true,
+      redirectUri: 'http://localhost:5173/api/auth/sso/callback' });
     const { rows: [o] } = await query('SELECT sso_secret_enc FROM organizations WHERE organization_id = $1', [R.lau]);
     expect(o.sso_secret_enc).not.toContain('right-secret'); // encrypted
     // saving again without the secret keeps the stored one

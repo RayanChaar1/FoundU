@@ -20,6 +20,7 @@ const PERMITTED = { staff: 'karim', admin: 'maya', platform: 'pa' };
 // and the read-only post history, which answers 405 to everyone (FR-3.8)
 const PUBLIC = [
   'post /auth/start', 'post /auth/verify', 'post /auth/profile', 'post /auth/logout',
+  'get /auth/sso/start', 'get /auth/sso/callback', 'get /auth/pending', // FR-1.2: before any session exists
   'post /organizations/requests', 'get /tags/:token', 'post /tags/:token/messages',
   'delete /posts/:id/history', 'patch /posts/:id/history', 'put /posts/:id/history',
 ];

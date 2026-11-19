@@ -11,6 +11,7 @@
     "db:seed": "node --env-file-if-exists=.env src/db/seed.js",
     "db:reset": "node --env-file-if-exists=.env src/db/migrate.js --reset && node --env-file-if-exists=.env src/db/seed.js",
     "test": "jest --runInBand",
+    "idp": "node dev/idp.js",
     "perf:seed": "node --env-file-if-exists=.env perf/seed.js",
     "perf:search": "node --env-file-if-exists=.env perf/search.js",
     "perf:match": "node --env-file-if-exists=.env perf/match.js",
