@@ -1,6 +1,7 @@
 /* FR-17.5: the personal data of a post is removed once it has been closed for the retention period of its organization
    (12 months by default, FR-16.8).  What stays is what statistics need: type, category, building, dates and status.
-   Open, claimed and returned posts are never touched. */
+   Open, claimed and returned posts are never touched.
+   NFR-12.3: audit entries are deleted once they are one year old. */
 const { query, transaction } = require('../../db/pool');
 const storage = require('../../lib/storage');
 
@@ -51,4 +52,13 @@ async function anonymizeExpired(now = new Date()) {
   return done;
 }
 
-module.exports = { anonymizeExpired, REMOVED };
+const AUDIT_MONTHS = 12; // NFR-12.3
+
+/** NFR-12.3: audit entries are kept for one year, then deleted.  Returns the number deleted. */
+async function purgeAuditLog(now = new Date()) {
+  const { rowCount } = await query(
+    `DELETE FROM audit_log WHERE created_at < $1::timestamptz - make_interval(months => $2)`, [now, AUDIT_MONTHS]);
+  return rowCount;
+}
+
+module.exports = { anonymizeExpired, purgeAuditLog, REMOVED, AUDIT_MONTHS };

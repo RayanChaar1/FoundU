@@ -16,6 +16,19 @@ function createApp() {
   app.disable('x-powered-by');
   app.set('trust proxy', 'loopback');
   app.use(helmet());
+
+  // NFR-1: when the server is overloaded, extra requests get 503 at once instead of waiting in a queue
+  const { maxInFlight } = config;
+  let inFlight = 0;
+  app.use('/api', (req, res, next) => {
+    if (inFlight >= maxInFlight) {
+      res.set('Retry-After', '5');
+      return res.status(503).json({ error: 'FoundU is very busy.  Try again in a few seconds.' });
+    }
+    inFlight += 1;
+    res.once('close', () => { inFlight -= 1; });
+    next();
+  });
   app.use(express.json({ limit: '100kb' }));
   app.use(cookieParser());
   app.use(loadUser);
@@ -25,7 +38,7 @@ function createApp() {
     '/api',
     rateLimit({
       windowMs: 60 * 1000,
-      limit: config.isTest ? 10000 : 100,
+      limit: config.rateLimitPerMinute,
       keyGenerator: (req) => (req.user ? `u${req.user.user_id}` : rateLimit.ipKeyGenerator(req.ip)),
       standardHeaders: 'draft-8',
       legacyHeaders: false,
