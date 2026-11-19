@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../auth';
 import Field from './Field';
+import BuildingPicker from '../modules/map/BuildingPicker';
 
 const TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
 const MAX_MB = 10;
@@ -17,6 +18,7 @@ export default function PostForm({ type, initial, onSubmit, submitLabel, busy, e
   const [photoError, setPhotoError] = useState(null);
   const f = error?.fields || {};
   const set = (k) => (e) => setV((old) => ({ ...old, [k]: e.target.value, ...(k === 'campusId' ? { locationId: '' } : {}) }));
+  const pickBuilding = useCallback((locationId) => setV((old) => ({ ...old, locationId })), []); // FR-11.3
 
   useEffect(() => () => photos.forEach((p) => URL.revokeObjectURL(p.url)), [photos]);
 
@@ -91,6 +93,8 @@ export default function PostForm({ type, initial, onSubmit, submitLabel, busy, e
           <input id="time" type="time" value={v.time} onChange={set('time')} />
         </Field>
       </div>
+      <BuildingPicker campus={reference.campuses.find((c) => String(c.id) === String(v.campusId))} buildings={buildings}
+        value={v.locationId} onChange={pickBuilding} />
 
       <Field id="description" label="Description" hint="(at most 1,000 characters)" error={f.description}>
         <textarea id="description" maxLength={1000} value={v.description} onChange={set('description')}

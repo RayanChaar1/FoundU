@@ -2,18 +2,31 @@
    the test accounts, categories, drop-off points, and badges.  No real personal data is used. */
 const { pool, transaction } = require('./pool');
 
+/* The buildings and gates of the LAU campus maps, at their OpenStreetMap positions.  Bassil Hall, Flex Space Labs and
+   the Byblos gates have no name in OpenStreetMap; they are placed from the campus map. */
 const LAU_BUILDINGS = {
   Beirut: [
-    ['Nicol Hall', 33.89278, 35.47791], ['Riyad Nassar Library', 33.89322, 35.47853],
-    ['Irwin Hall', 33.89246, 35.47712], ['Sage Hall', 33.89301, 35.47680],
-    ['Business Building', 33.89355, 35.47746], ['Cafeteria', 33.89211, 35.47826],
+    ['Nicol Hall', 33.89256, 35.47848], ['Wadad Sabbagh Khoury Student Center', 33.89231, 35.47849],
+    ['Cafeteria', 33.89243, 35.47866], ['Safadi Fine Arts Building', 33.89289, 35.47863],
+    ['Gymnasium', 33.89317, 35.47857], ['University Services Building', 33.89340, 35.47854],
+    ['Irwin Hall', 33.89316, 35.47820], ['Sage Hall', 33.89269, 35.47768],
+    ['Shannon Hall', 33.89316, 35.47756], ['Orme-Gray Hall', 33.89283, 35.47711],
+    ['Adnan Kassar School of Business', 33.89274, 35.47651], ['Riyad Nassar Library', 33.89294, 35.47645],
+    ['Upper Gate', 33.89239, 35.47806], ['Middle Gate', 33.89261, 35.47681], ['Lower Gate', 33.89343, 35.47770],
   ],
   Byblos: [
-    ['Bassil Hall', 34.11585, 35.67431], ['Joseph G. Jabbra Library', 34.11632, 35.67505],
-    ['Frem Civic Center', 34.11541, 35.67377], ['Engineering Building', 34.11690, 35.67450],
+    ['Bassil Hall', 34.11522, 35.67439], ['Joseph G. Jabbra Library', 34.11637, 35.67420],
+    ['Riyad Nassar Central Administration', 34.11604, 35.67440],
+    ['Gilbert and Rose-Marie Chagoury Health Sciences Center', 34.11586, 35.67494],
+    ['Frem Civic Center', 34.11499, 35.67496], ['Zakhem Hall', 34.11507, 35.67415],
+    ['Architecture Hall', 34.11526, 35.67372], ['Tohme-Rizk Hall', 34.11519, 35.67316],
+    ['Science Building', 34.11538, 35.67319], ['Engineering Laboratories and Research Center', 34.11482, 35.67628],
+    ['Flex Space Labs', 34.11458, 35.67660], ['Block A Building', 34.11645, 35.67350],
+    ['Residence Hall Block B', 34.11597, 35.67269], ['Cafeteria', 34.11518, 35.67259],
+    ['Main Gate', 34.11603, 35.67387], ['Upper Gate', 34.11506, 35.67289], ['Lower Gate', 34.11576, 35.67241],
   ],
 };
-const CAMPUS_CENTER = { Beirut: [33.8929, 35.4778], Byblos: [34.1161, 35.6744] };
+const CAMPUS_CENTER = { Beirut: [33.8929, 35.4776], Byblos: [34.1155, 35.6745] };
 const CATEGORIES = [
   ['Phone', false], ['Laptop', false], ['Wallet', false], ['Keys', false], ['Bag', false], ['Clothing', false],
   ['Water bottle', false], ['Umbrella', false], ['Electronics', false], ['Books and notes', false],
