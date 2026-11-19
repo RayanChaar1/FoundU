@@ -1,0 +1,24 @@
+/* My Posts and Profile (FR-10) */
+.activity-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 1rem; align-items: start; }
+.activity-side { display: grid; gap: 1rem; }
+.activity-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.4rem; }
+.activity-list a { display: flex; align-items: center; gap: 0.7rem; padding: 0.55rem 0.7rem; border: 1px solid var(--line); border-radius: 12px; color: var(--navy); text-decoration: none; }
+.activity-list a:hover { border-color: var(--blue); }
+.activity-list .badge { flex: none; }
+.a-thumb { flex: none; width: 44px; height: 44px; border-radius: 10px; overflow: hidden; background: #eef1f6; display: grid; place-items: center; }
+.a-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.a-body { flex: 1; min-width: 0; display: grid; }
+.a-title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.activity-list .sub, .profile-card .sub { color: var(--muted); font-size: 0.85rem; }
+.toggle { display: flex; gap: 0.6rem; align-items: center; padding: 0.35rem 0; cursor: pointer; }
+.toggle input { width: 18px; height: 18px; accent-color: var(--blue); }
+.profile-card { max-width: 640px; }
+.profile-head { display: flex; gap: 1rem; align-items: center; }
+.profile-head h1 { margin: 0; }
+.profile-avatar { width: 64px; height: 64px; border-radius: 999px; background: var(--blue-soft); color: var(--blue); display: grid; place-items: center; font-weight: 700; font-size: 1.4rem; flex: none; }
+.profile-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; margin: 1.2rem 0 0; }
+.profile-stats div { background: #f5f7fb; border-radius: 12px; padding: 0.8rem; text-align: center; }
+.profile-stats dt { color: var(--muted); font-size: 0.8rem; }
+.profile-stats dd { margin: 0.2rem 0 0; font-size: 1.5rem; font-weight: 700; color: var(--navy); }
+.badge-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.4rem; }
+@media (max-width: 860px) { .activity-grid { grid-template-columns: 1fr; } }

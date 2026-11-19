@@ -54,7 +54,7 @@ router.get('/posts/:id', requireAuth, async (req, res) => {
     coordinates: [Number(p.latitude), Number(p.longitude)],
     eventDatetime: p.event_datetime,
     createdAt: p.created_at,
-    poster: p.poster ? { displayName: p.poster, badges: await repo.badgesOf(p.poster_id) } : { displayName: 'Former user', badges: [] },
+    poster: p.poster ? { id: p.poster_id, displayName: p.poster, badges: await repo.badgesOf(p.poster_id) } : { displayName: 'Former user', badges: [] },
     photoIds: await repo.photoIds(p.post_id),
     isOwner,
   };
