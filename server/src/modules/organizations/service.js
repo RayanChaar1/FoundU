@@ -6,6 +6,7 @@ const { encrypt, decrypt, randomToken } = require('../../lib/crypto');
 const { sendMail } = require('../../lib/mailer');
 const { badRequest, notFound, conflict } = require('../../lib/errors');
 const { txtRecords } = require('./dns');
+const config = require('../../config');
 const { testConnection, SsoError } = require('./oidc');
 
 /** Free email providers: anyone can get an address there, so they never identify an organization. */
@@ -267,7 +268,8 @@ async function sso(admin) {
        FROM organizations WHERE organization_id = $1`,
     [admin.organization_id],
   );
-  return o;
+  // FR-1.2: the address to register at the provider, where it sends users back after they sign in
+  return { ...o, redirectUri: `${config.clientUrl.replace(/\/+$/, '')}/api/auth/sso/callback` };
 }
 
 /** Tests the settings first; they are saved and switched on only if the test sign-in succeeds.  A blank secret keeps

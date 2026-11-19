@@ -1,21 +1,43 @@
-import { useState } from 'react';
-import { Link } from 'react-router';
+import { useEffect, useState } from 'react';
+import { Link, useSearchParams } from 'react-router';
 import { api } from '../api';
 import { useAuth } from '../auth';
 import Field from '../components/Field';
 
-/* FR-1.3 to FR-1.7: sign in with a one-time code sent to the organization email, then create the profile. */
+// FR-1.2: what the server reports when a sign-in through the identity provider does not go through
+const SSO_ERRORS = {
+  denied: 'The sign-in was cancelled or refused at your organization\'s sign-in page.  Try again.',
+  expired: 'Your sign-in took too long or was already used.  Start again.',
+  invalid: 'Your organization\'s sign-in could not be verified, so you were not signed in.  Try again.',
+  unavailable: 'Single sign-on is no longer connected for your organization.  Start again to get a code by email.',
+  unreachable: 'Your organization\'s sign-in page cannot be reached right now.  Try again in a few minutes.',
+  'other-org': 'You signed in with an address of another organization.  Use your address of this organization.',
+  suspended: 'This account is suspended.',
+};
+
+/* FR-1.2 to FR-1.7: sign in through the organization's identity provider when it is connected, otherwise with a
+   one-time code sent to the organization email; then create the profile on the first sign-in. */
 export default function SignIn() {
   const { refresh, notice } = useAuth();
-  const [step, setStep] = useState('email');
+  const [params, setParams] = useSearchParams();
+  const [step, setStep] = useState(params.get('step') === 'profile' ? 'loading' : 'email');
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
   const [org, setOrg] = useState('');
   const [campuses, setCampuses] = useState([]);
   const [fullName, setFullName] = useState('');
   const [campusId, setCampusId] = useState('');
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(() => (SSO_ERRORS[params.get('sso')] ? { message: SSO_ERRORS[params.get('sso')], fields: {} } : null));
   const [busy, setBusy] = useState(false);
+
+  // Back from the identity provider on a first sign-in: the profile step, with the name the provider gave
+  useEffect(() => {
+    if (params.get('step') !== 'profile') return;
+    api.get('/auth/pending')
+      .then((p) => { setEmail(p.email); setFullName(p.fullName); setCampuses(p.campuses); setStep('profile'); })
+      .catch((err) => { setError(err); setStep('email'); });
+    setParams({}, { replace: true });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const run = (fn) => async (e) => {
     e.preventDefault();
@@ -30,11 +52,12 @@ export default function SignIn() {
     }
   };
 
-  const sendCode = run(async () => {
+  const start = run(async () => {
     const res = await api.post('/auth/start', { email });
+    setParams({}, { replace: true });
     setOrg(res.organization);
     setCode('');
-    setStep('code');
+    setStep(res.sso ? 'sso' : 'code');
   });
 
   const verify = run(async () => {
@@ -72,7 +95,7 @@ export default function SignIn() {
       <section className="auth-form">
         <div className="card">
           {step === 'email' && (
-            <form onSubmit={sendCode} noValidate>
+            <form onSubmit={start} noValidate>
               <h2>Sign in</h2>
               <p className="hint">Use the email address of your university or company.</p>
               {notice && !error && <div className="alert info" role="status">{notice}</div>}
@@ -81,11 +104,22 @@ export default function SignIn() {
                 <input id="email" type="email" autoComplete="email" autoFocus required value={email}
                   placeholder="name@lau.edu" onChange={(e) => setEmail(e.target.value)} />
               </Field>
-              <button className="btn block" disabled={busy || !email}>{busy ? 'Sending…' : 'Send me a code'}</button>
+              <button className="btn block" disabled={busy || !email}>{busy ? 'Checking…' : 'Continue'}</button>
               <p className="hint" style={{ marginTop: '1rem', textAlign: 'center' }}>
                 Is your organization not on FoundU yet?  <Link to="/join">Request access</Link>
               </p>
             </form>
+          )}
+
+          {step === 'sso' && (
+            <div>
+              <h2>Sign in with {org}</h2>
+              <p className="hint">{org} signs you in on its own sign-in page, then sends you back to FoundU.</p>
+              <a className="btn block" href="/api/auth/sso/start">Sign in with {org}</a>
+              <p style={{ marginTop: '1rem', textAlign: 'center' }}>
+                <button type="button" className="btn secondary small" onClick={() => setStep('email')}>Use another email</button>
+              </p>
+            </div>
           )}
 
           {step === 'code' && (

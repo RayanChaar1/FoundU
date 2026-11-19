@@ -4,9 +4,19 @@ const { query } = require('../../db/pool');
 async function findOrganizationForEmail(email) {
   const domain = email.split('@')[1].toLowerCase();
   const { rows } = await query(
-    `SELECT organization_id, name FROM organizations
+    `SELECT organization_id, name, sso_enabled FROM organizations
       WHERE status = 'ACTIVE' AND $1 = ANY (SELECT lower(d) FROM unnest(email_domains) d)`,
     [domain],
+  );
+  return rows[0];
+}
+
+/** FR-1.2: the identity provider settings of an active organization. */
+async function ssoOrganization(organizationId) {
+  const { rows } = await query(
+    `SELECT organization_id, name, sso_enabled, sso_issuer, sso_client_id, sso_secret_enc FROM organizations
+      WHERE organization_id = $1 AND status = 'ACTIVE'`,
+    [organizationId],
   );
   return rows[0];
 }
@@ -67,6 +77,7 @@ async function updatePreferences(userId, { emailNotifications, hideFromLeaderboa
 
 module.exports = {
   findOrganizationForEmail,
+  ssoOrganization,
   findUserByEmail,
   insertOtp,
   latestOtp,
