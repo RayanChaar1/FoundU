@@ -1,7 +1,7 @@
 /* Notifications module (Table 7, FR-8).  Foundation used by every other module: creates the in-application
    notification; a sweep emails it when the user has enabled email notifications (FR-1.11, FR-8.2). */
 const { query } = require('../../db/pool');
-const { sendMail } = require('../../lib/mailer');
+const mailer = require('../../lib/mailer'); // called through the module so tests can simulate a mail failure
 const config = require('../../config');
 
 /**
@@ -48,11 +48,17 @@ async function sendPendingEmails() {
       send = recent.rowCount === 0;
     }
     if (send) {
-      await sendMail({
-        to: n.email,
-        subject: `FoundU: ${n.content.length > 70 ? `${n.content.slice(0, 67)}...` : n.content}`,
-        text: `${n.content}\n\n${n.link ? `Open: ${config.clientUrl}${n.link}\n\n` : ''}You can turn off email notifications in your profile.`,
-      });
+      try {
+        await mailer.sendMail({
+          to: n.email,
+          subject: `FoundU: ${n.content.length > 70 ? `${n.content.slice(0, 67)}...` : n.content}`,
+          text: `${n.content}\n\n${n.link ? `Open: ${config.clientUrl}${n.link}\n\n` : ''}You can turn off email notifications in your profile.`,
+        });
+      } catch (err) {
+        // FR-8.2: the in-application notification stays; the email is retried by the next sweep
+        console.error(`[email] notification ${n.notification_id} not sent: ${err.message}`);
+        continue;
+      }
       sent += 1;
     }
     await query(
