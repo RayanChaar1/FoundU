@@ -46,7 +46,7 @@ export default function Places() {
         {campus && (
           <>
             <h3 className="section-title">{campus.name} <span className="hint">(campus centre {campus.latitude}, {campus.longitude})</span></h3>
-            <table className="admin-table">
+            <div className="table-scroll"><table className="admin-table">
               <thead><tr><th>Building</th><th>Latitude</th><th>Longitude</th><th>Used by</th><th aria-label="Actions" /></tr></thead>
               <tbody>
                 {buildings.map((b) => (
@@ -55,7 +55,7 @@ export default function Places() {
                     onDelete={() => change(() => api.del(`/buildings/${b.id}`), `${b.name} deleted.`)} />
                 ))}
               </tbody>
-            </table>
+            </table></div>
             {!buildings.length && <p className="hint">No building yet.</p>}
             <PlaceForm idPrefix="b" title="Add a building" nameLabel="Building"
               onSubmit={(v) => change(() => api.post('/buildings', { ...v, campusId }), `${v.name} added to ${campus.name}.`)} />
@@ -63,7 +63,7 @@ export default function Places() {
         )}
         <div className="subpanel">
           <h3 className="section-title">Campuses</h3>
-          <table className="admin-table">
+          <div className="table-scroll"><table className="admin-table">
             <thead><tr><th>Campus</th><th>Latitude</th><th>Longitude</th><th>Buildings</th><th aria-label="Actions" /></tr></thead>
             <tbody>
               {data.campuses.map((c) => {
@@ -75,7 +75,7 @@ export default function Places() {
                 );
               })}
             </tbody>
-          </table>
+          </table></div>
           <PlaceForm idPrefix="c" title="Add a campus" nameLabel="Campus"
             onSubmit={(v) => change(() => api.post('/campuses', v), `${v.name} added.`)} />
         </div>
@@ -174,7 +174,7 @@ function Categories({ categories, change }) {
     <section className="card panel admin-section">
       <h2>Categories</h2>
       <p className="hint">Photos of sensitive categories are blurred for other users, and long numbers in their posts are hidden (FR-17).</p>
-      <table className="admin-table">
+      <div className="table-scroll"><table className="admin-table">
         <thead><tr><th>Category</th><th>Sensitive</th><th>Posts</th><th aria-label="Actions" /></tr></thead>
         <tbody>
           {categories.map((c) => (editing?.id === c.id ? (
@@ -199,7 +199,7 @@ function Categories({ categories, change }) {
             </tr>
           )))}
         </tbody>
-      </table>
+      </table></div>
       <form className="inline-form add-form" onSubmit={add} noValidate>
         <Field id="cat-name" label="Add a category" error={errors.name}>
           <input id="cat-name" maxLength={60} value={name} placeholder="Category" onChange={(e) => setName(e.target.value)} />

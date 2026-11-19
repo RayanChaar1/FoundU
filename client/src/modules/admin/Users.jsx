@@ -37,7 +37,7 @@ export default function Users() {
         </form>
         <Notice notice={notice} />
         {users && (
-          <table className="admin-table">
+          <div className="table-scroll"><table className="admin-table">
             <thead><tr><th>Name</th><th>Role</th><th>Status</th></tr></thead>
             <tbody>
               {users.map((u) => (
@@ -51,7 +51,7 @@ export default function Users() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
         )}
         {users && !users.length && <p className="empty">No user matches “{text}”.</p>}
       </section>

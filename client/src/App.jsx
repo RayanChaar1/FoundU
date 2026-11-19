@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router';
 import { useAuth } from './auth';
 import Layout from './components/Layout';
+import PageTitle from './components/PageTitle';
 import SignIn from './pages/SignIn';
 import Feed from './pages/Feed';
 import PostDetail from './pages/PostDetail';
@@ -18,11 +19,14 @@ export default function App() {
 
   if (!user) {
     return (
-      <Routes>
-        <Route path="/signin" element={<SignIn />} />
-        {publicRoutes().map((r) => <Route key={r.path} path={r.path} element={r.element} />)}
-        <Route path="*" element={<Navigate to="/signin" replace />} />
-      </Routes>
+      <>
+        <PageTitle />
+        <Routes>
+          <Route path="/signin" element={<SignIn />} />
+          {publicRoutes().map((r) => <Route key={r.path} path={r.path} element={r.element} />)}
+          <Route path="*" element={<Navigate to="/signin" replace />} />
+        </Routes>
+      </>
     );
   }
 

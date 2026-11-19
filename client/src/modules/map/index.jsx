@@ -5,5 +5,5 @@ import './map.css';
 export default {
   order: 20,
   routes: [{ path: '/map', element: <CampusMap /> }],
-  nav: [{ to: '/map', label: 'Map' }],
+  nav: [{ to: '/map', label: 'Map', primary: true }],
 };

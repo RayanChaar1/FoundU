@@ -6,7 +6,7 @@
 .karma-badges { list-style: none; margin: 0 0 1rem; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
 .karma-badges li {
   display: grid; justify-items: center; text-align: center; gap: 0.1rem; padding: 0.6rem 0.3rem;
-  border: 1px dashed var(--line); border-radius: 12px; opacity: 0.45; font-size: 0.85rem;
+  border: 1px dashed var(--line); border-radius: 12px; color: var(--muted); background: #f5f7fb; font-size: 0.85rem;
 }
 .karma-badges li > span:first-child { font-size: 1.5rem; }
 .karma-badges li.earned { opacity: 1; border-style: solid; border-color: #f0d38a; background: #fff8e6; }
