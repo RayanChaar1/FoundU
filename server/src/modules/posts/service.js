@@ -11,14 +11,19 @@ const { badRequest, forbidden, notFound, conflict } = require('../../lib/errors'
 const MAX_PHOTOS = 5; // FR-2.3, FR-3.3
 
 /** Checks that the referenced category, building, and drop-off point belong to the user's organization. */
-async function resolveReferences(org, input) {
+async function resolveReferences(org, input, currentLocationId) {
   const fields = {};
   const category = input.categoryId && (await repo.getCategory(org, input.categoryId));
   if (input.categoryId && !category) fields.categoryId = 'Choose a category.';
   const location = input.locationId && (await repo.getLocation(org, input.locationId));
   if (input.locationId && !location) fields.locationId = 'Choose a building.';
-  if (input.whereabouts === 'DROPOFF' && !(await repo.getDropoff(org, input.dropoffId))) {
-    fields.dropoffId = 'Choose the drop-off point from the official list.'; // FR-3.7
+  if (input.whereabouts === 'DROPOFF') {
+    const dropoff = await repo.getDropoff(org, input.dropoffId);
+    const where = location || (currentLocationId && (await repo.getLocation(org, currentLocationId)));
+    if (!dropoff) fields.dropoffId = 'Choose the drop-off point from the official list.'; // FR-3.7
+    else if (where && (await repo.getLocation(org, dropoff.location_id)).campus_id !== where.campus_id) {
+      fields.dropoffId = 'Choose a drop-off point on the campus where the item was found.'; // FR-14.1
+    }
   }
   if (Object.keys(fields).length) throw badRequest('Some fields are missing or invalid.', { fields });
   return { category, location };
@@ -88,6 +93,9 @@ async function edit(user, id, input) {
   if (post.type === 'LOST' && ['verificationQuestion', 'verificationAnswer', 'whereabouts', 'dropoffId'].some((k) => k in input)) {
     throw badRequest('Lost posts have no verification question or whereabouts.');
   }
+  if (post.received_at && ['whereabouts', 'dropoffId', 'locationId'].some((k) => k in input)) {
+    throw conflict('The item is already held at the drop-off point.'); // FR-14.3
+  }
   const merged = { whereabouts: post.whereabouts, dropoffId: post.dropoff_id, ...input };
   if (merged.whereabouts === 'FINDER') merged.dropoffId = null;
   const { category } = await resolveReferences(user.organization_id, {
@@ -95,7 +103,7 @@ async function edit(user, id, input) {
     locationId: input.locationId,
     whereabouts: merged.whereabouts,
     dropoffId: merged.dropoffId,
-  });
+  }, post.location_id);
   const isSensitive = category ? category.is_sensitive_default : post.is_sensitive;
 
   const fields = {};

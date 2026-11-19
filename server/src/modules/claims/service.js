@@ -21,6 +21,11 @@ const isReviewer = (user, claim) =>
 /** Parties of a handover: the claimant and the finder, plus staff for items held at a drop-off point. */
 const isParty = (user, claim) => claim.claimant_id === user.user_id || isReviewer(user, claim);
 
+/** Who enters the handover code: the finder or a security officer; only an officer for items at a drop-off point (FR-14.6). */
+const canConfirm = (user, claim) => (claim.whereabouts === 'DROPOFF'
+  ? isStaff(user) && claim.claimant_id !== user.user_id
+  : claim.owner_id === user.user_id || (isStaff(user) && claim.claimant_id !== user.user_id));
+
 async function loadClaim(db, user, id, forUpdate) {
   const claim = await repo.claimFor(db, user.organization_id, id, forUpdate);
   if (!claim) throw notFound('This claim does not exist.');
@@ -74,6 +79,8 @@ function view(user, c) {
     isClaimant: c.claimant_id === user.user_id,
     isReviewer: reviewer,
     hasConversation: ['APPROVED', 'COMPLETED'].includes(c.status), // FR-6.12, FR-7.1
+    atDropoff: c.whereabouts === 'DROPOFF', // FR-14.5: the release needs the ID check
+    canConfirm: canConfirm(user, c),
   };
   if (c.verification_question) out.verificationQuestion = c.verification_question;
   if (reviewer && c.verification_answer_enc) out.expectedAnswer = decrypt(c.verification_answer_enc);
@@ -174,12 +181,19 @@ async function withdraw(user, id) {
 }
 
 /** FR-9.4 to FR-9.8: the finder or a security officer enters the claimant's code to confirm the return. */
-async function confirmHandover(user, id, code) {
+async function confirmHandover(user, id, code, { idChecked = false } = {}) {
   const outcome = await transaction(async (db) => {
     const c = await loadClaim(db, user, id, true);
-    const allowed = c.owner_id === user.user_id || (isStaff(user) && c.claimant_id !== user.user_id);
-    if (!allowed) throw forbidden('Only the finder or a security officer can enter the handover code.');
+    if (!canConfirm(user, c)) {
+      throw forbidden(c.whereabouts === 'DROPOFF'
+        ? 'Items held at a drop-off point are released by a security officer.'
+        : 'Only the finder or a security officer can enter the handover code.');
+    }
     if (c.status !== 'APPROVED' || c.post_status !== 'CLAIMED') throw conflict('This claim has no handover in progress.');
+    if (c.whereabouts === 'DROPOFF' && !idChecked) { // FR-14.5: checked before the code, so no attempt is used up
+      const message = "Confirm that you checked the claimant's university or employee ID card.";
+      throw badRequest(message, { fields: { idChecked: message } });
+    }
     if (c.code_locked_until && c.code_locked_until > new Date()) return { blocked: c.code_locked_until };
 
     if (!(await verifyHash(c.handover_code_hash, code))) {
@@ -196,7 +210,10 @@ async function confirmHandover(user, id, code) {
     }
 
     const now = new Date();
-    await repo.updateClaim(db, id, { status: 'COMPLETED', returned_at: now, failed_attempts: 0, handover_code_enc: null });
+    await repo.updateClaim(db, id, {
+      status: 'COMPLETED', returned_at: now, failed_attempts: 0, handover_code_enc: null,
+      ...(c.whereabouts === 'DROPOFF' ? { id_checked_by: user.user_id } : {}),
+    });
     await repo.setPostStatus(db, c.post_id, { status: 'RETURNED', returned_at: now }); // FR-9.5, FR-9.6
     await repo.history(db, c.post_id, user.user_id, { status: { from: 'CLAIMED', to: 'RETURNED' }, returnedAt: now.toISOString(), claimId: c.claim_id });
     await notifyAll([c.claimant_id, c.owner_id], 'HANDOVER', `"${c.post_title}" was returned to its owner.  Thank you for using FoundU.`,

@@ -1,0 +1,25 @@
+/* Drop-off points (FR-14). */
+.dropoff-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+.dropoff-card { padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.dropoff-card h3 { margin: 0; }
+.dropoff-card dl { display: grid; grid-template-columns: auto 1fr; gap: 0.15rem 0.75rem; margin: 0; font-size: 0.9rem; }
+.dropoff-card dt { color: var(--muted); }
+.dropoff-card dd { margin: 0; }
+.dropoff-card .btn { align-self: flex-start; margin-top: auto; }
+.dropoff-form { margin-bottom: 1rem; }
+.dropoff-form h2 { margin-bottom: 0.2rem; }
+.dropoff-row { display: grid; grid-template-columns: 1.3fr 1.3fr 1fr 1fr; gap: 1rem; }
+.desk-layout { display: grid; grid-template-columns: 1fr 320px; gap: 1rem; align-items: start; }
+.desk-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.desk-table th { text-align: left; color: var(--muted); font-weight: 550; padding: 0.4rem 0.5rem; border-bottom: 1px solid var(--line); }
+.desk-table td { padding: 0.5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+.desk-table tr:last-child td { border-bottom: 0; }
+.desk-layout aside .inline-form .field { flex-basis: 7rem; }
+.desk-expected { list-style: none; margin: 0.4rem 0 0; padding: 0; }
+.desk-expected li { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; padding: 0.4rem 0; border-bottom: 1px solid var(--line); }
+.desk-expected li:last-child { border-bottom: 0; }
+.id-check { display: flex; gap: 0.5rem; align-items: flex-start; margin: 0.25rem 0 0.75rem; font-size: 0.9rem; }
+.id-check input { margin-top: 0.2rem; width: auto; }
+@media (max-width: 900px) {
+  .desk-layout, .dropoff-row { grid-template-columns: 1fr; }
+}

@@ -14,6 +14,7 @@ export default function ClaimDetail() {
   const [mode, setMode] = useState(null); // 'reject' | 'cancel'
   const [reason, setReason] = useState('');
   const [code, setCode] = useState('');
+  const [idChecked, setIdChecked] = useState(false);
   const [fieldError, setFieldError] = useState(null);
   const [busy, setBusy] = useState(false);
 
@@ -113,14 +114,26 @@ export default function ClaimDetail() {
             <p className="hint">Give this code to the finder or the security officer when you collect the item.  Only you can see it.</p>
           </div>
         )}
-        {claim.status === 'APPROVED' && finderSide && (
-          <form className="inline-form" onSubmit={(e) => { e.preventDefault(); act('handover', { code }, 'Item returned.  Thank you for helping!'); }} noValidate>
-            <Field id="code" label="Confirm return: enter the owner's 4-digit code" error={fieldError}>
-              <input id="code" inputMode="numeric" autoComplete="off" maxLength={4} value={code} disabled={blocked}
-                onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))} aria-invalid={!!fieldError} />
-            </Field>
-            <button type="submit" className="btn" disabled={busy || blocked || code.length !== 4} style={{ marginTop: '1.7rem' }}>Confirm return</button>
+        {claim.status === 'APPROVED' && finderSide && claim.canConfirm !== false && (
+          <form onSubmit={(e) => { e.preventDefault(); act('handover', claim.atDropoff ? { code, idChecked } : { code }, 'Item returned.  Thank you for helping!'); }} noValidate>
+            {claim.atDropoff && ( // FR-14.5
+              <label className="id-check">
+                <input type="checkbox" checked={idChecked} onChange={(e) => setIdChecked(e.target.checked)} />
+                <span>I checked the claimant's university or employee ID card, and the name matches.</span>
+              </label>
+            )}
+            <div className="inline-form">
+              <Field id="code" label="Confirm return: enter the owner's 4-digit code" error={fieldError}>
+                <input id="code" inputMode="numeric" autoComplete="off" maxLength={4} value={code} disabled={blocked}
+                  onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))} aria-invalid={!!fieldError} />
+              </Field>
+              <button type="submit" className="btn" disabled={busy || blocked || code.length !== 4 || (claim.atDropoff && !idChecked)}
+                style={{ marginTop: '1.7rem' }}>{claim.atDropoff ? 'Release item' : 'Confirm return'}</button>
+            </div>
           </form>
+        )}
+        {claim.status === 'APPROVED' && finderSide && claim.canConfirm === false && (
+          <div className="alert info">The item is held at a drop-off point.  A security officer releases it after checking the owner's ID card and code.</div>
         )}
         {claim.status === 'APPROVED' && blocked && (
           <div className="alert error" style={{ marginTop: '1rem' }}>Code entry is blocked until {formatDate(claim.codeBlockedUntil, true)} after five wrong codes.</div>

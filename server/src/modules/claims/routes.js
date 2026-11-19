@@ -52,8 +52,11 @@ router.post('/claims/:id/withdraw', requireAuth, async (req, res) => {
 });
 
 router.post('/claims/:id/handover', requireAuth, async (req, res) => {
-  const { code } = z.object({ code: z.string({ error: 'Enter the 4-digit code.' }).trim().regex(/^\d{4}$/, 'Enter the 4-digit code.') }).parse(req.body);
-  res.json({ claim: await service.confirmHandover(req.user, id.parse(req.params.id), code) });
+  const { code, idChecked } = z.object({
+    code: z.string({ error: 'Enter the 4-digit code.' }).trim().regex(/^\d{4}$/, 'Enter the 4-digit code.'),
+    idChecked: z.boolean().optional(), // FR-14.5: required for items held at a drop-off point
+  }).parse(req.body);
+  res.json({ claim: await service.confirmHandover(req.user, id.parse(req.params.id), code, { idChecked }) });
 });
 
 router.post('/claims/:id/cancel', requireAuth, async (req, res) => {
