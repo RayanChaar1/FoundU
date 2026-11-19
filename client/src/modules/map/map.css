@@ -29,3 +29,6 @@
   .map-layout { grid-template-columns: 1fr; }
   .map-side { max-height: none; }
 }
+
+/* WCAG 1.4.1: the map credit link is underlined and dark enough */
+.leaflet-control-attribution a { color: #0a47b3; text-decoration: underline; }

@@ -3,7 +3,7 @@
      order,                       // position of its nav links (lower first, default 50)
      routes: [{ path, element, roles, show }],
      publicRoutes: [{ path, element }],  // pages for visitors who are not signed in (e.g. the access request)
-     nav: [{ to, label, roles, show }],
+     nav: [{ to, label, roles, show, primary }],  // primary links stay in the bar; the others go under "More"
      header: [Component],         // small items in the top bar, before the user chip (e.g. a notification bell)
      postPanels: [Component],     // sections at the bottom of a post page, given { post }
      claimPanels: [Component],    // sections at the bottom of a claim page, given { claim, reload }

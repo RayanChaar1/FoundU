@@ -42,7 +42,7 @@ function Domains() {
       <Notice notice={notice} />
       {data && (
         <>
-          <table className="admin-table">
+          <div className="table-scroll"><table className="admin-table">
             <thead><tr><th>Domain</th><th>Members</th><th /></tr></thead>
             <tbody>
               {data.domains.map((d) => (
@@ -55,7 +55,7 @@ function Domains() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
           <p className="hint" style={{ marginTop: '1rem' }}>To add a domain, first add this TXT record to its DNS, so FoundU knows it is yours:</p>
           <code className="dns-record">{data.dnsRecord}</code>
           <form className="inline-form add-form" onSubmit={add} noValidate>

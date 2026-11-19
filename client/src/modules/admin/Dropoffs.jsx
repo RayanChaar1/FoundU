@@ -40,7 +40,7 @@ export default function Dropoffs() {
           onCancel={() => setEditing(null)}
           onSubmit={(v) => change(() => api.post('/dropoffs', v), `${v.name} added to the official list.`)} />
       )}
-      <table className="admin-table">
+      <div className="table-scroll"><table className="admin-table">
         <thead><tr><th>Point</th><th>Building</th><th>Hours</th><th>Holds</th><th aria-label="Actions" /></tr></thead>
         <tbody>
           {points.map((d) => (editing === d.id ? (
@@ -66,7 +66,7 @@ export default function Dropoffs() {
             </tr>
           )))}
         </tbody>
-      </table>
+      </table></div>
       {!points.length && <p className="empty">No drop-off point yet.</p>}
     </section>
   );

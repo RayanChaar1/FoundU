@@ -13,6 +13,7 @@ export default function Feed() {
   const filters = Object.fromEntries(FILTERS.map((k) => [k, params.get(k) || '']));
   const [q, setQ] = useState(filters.q);
   const [data, setData] = useState(null);
+  const [showFilters, setShowFilters] = useState(false); // phones only: the filters start folded (NFR-8.2)
   const [error, setError] = useState(null);
   const key = params.toString();
 
@@ -32,6 +33,7 @@ export default function Feed() {
   };
   const buildings = reference?.buildings.filter((b) => !filters.campusId || String(b.campusId) === filters.campusId) || [];
   const anyFilter = FILTERS.some((k) => k !== 'page' && filters[k]);
+  const activeCount = FILTERS.filter((k) => !['page', 'q'].includes(k) && filters[k]).length;
   const pages = data ? Math.max(1, Math.ceil(data.total / data.pageSize)) : 1;
 
   return (
@@ -45,7 +47,11 @@ export default function Feed() {
       </div>
 
       <div className="feed-layout">
-        <aside className="card filters" aria-label="Filters">
+        <aside className={`card filters${showFilters ? ' open' : ''}`} aria-label="Filters">
+          <button type="button" className="btn secondary block filters-toggle" aria-expanded={showFilters}
+            onClick={() => setShowFilters(!showFilters)}>
+            {showFilters ? 'Hide filters' : `Filters${activeCount ? ` (${activeCount})` : ''}`}
+          </button>
           <div className="field">
             <span className="sr-only" id="type-label">Type</span>
             <div className="segmented" role="group" aria-labelledby="type-label" style={{ width: '100%' }}>

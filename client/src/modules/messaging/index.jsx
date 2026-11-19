@@ -20,6 +20,6 @@ export default {
     { path: '/conversations', element: <Conversations /> },
     { path: '/conversations/:id', element: <Conversation /> },
   ],
-  nav: [{ to: '/conversations', label: 'Messages' }],
+  nav: [{ to: '/conversations', label: 'Messages', primary: true }],
   claimPanels: [ClaimConversationLink],
 };
