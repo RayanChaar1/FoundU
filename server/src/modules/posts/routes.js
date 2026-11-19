@@ -117,6 +117,13 @@ router.delete('/posts/:id/photos/:photoId', requireAuth, async (req, res) => {
 router.get('/posts/:id/history', requireAuth, async (req, res) => {
   const post = await service.ownPost(req.user, id.parse(req.params.id));
   res.json({ history: await service.history(post.post_id) });
+
+// FR-10.3: the history is append-only; it can be read but never changed or deleted
+const historyIsReadOnly = (req, res) => res.set('Allow', 'GET').status(405).json({ error: 'The history of a post cannot be changed.' });
+router.all('/posts/:id/history/:entry', historyIsReadOnly);
+router.delete('/posts/:id/history', historyIsReadOnly);
+router.patch('/posts/:id/history', historyIsReadOnly);
+router.put('/posts/:id/history', historyIsReadOnly);
 });
 
 module.exports = router;

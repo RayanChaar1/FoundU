@@ -77,7 +77,7 @@ export default function PostDetail() {
             <dt>Category</dt><dd>{post.category}</dd>
             <dt>Where</dt><dd>{post.building}, {post.campus} campus</dd>
             <dt>{post.type === 'LOST' ? 'Lost on' : 'Found on'}</dt><dd>{formatDate(post.eventDatetime, true)}</dd>
-            <dt>Posted</dt><dd>{timeAgo(post.createdAt)} by {post.poster.displayName}{' '}
+            <dt>Posted</dt><dd>{timeAgo(post.createdAt)} by {post.poster.id ? <Link to={`/users/${post.poster.id}`}>{post.poster.displayName}</Link> : post.poster.displayName}{' '}
               {post.poster.badges.map((b) => <span key={b.code} className="badge award" style={{ marginLeft: 4 }}>🏅 {b.name}</span>)}
             </dd>
           </dl>
