@@ -1,0 +1,26 @@
+/* FR-12 QR tags */
+.tag-list { display: grid; gap: 1rem; }
+.tag-card { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 1.1rem; padding: 1.1rem 1.2rem; align-items: start; }
+.tag-card.inactive .tag-qr { opacity: 0.35; }
+.tag-card.selected { outline: 2px solid var(--blue); }
+.tag-qr { width: 112px; height: 112px; border: 1px solid var(--line); border-radius: 8px; background: #fff; padding: 4px; }
+.tag-card h2 { margin: 0; font-size: 1.1rem; display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+.tag-card .meta { color: var(--muted); font-size: 0.88rem; margin: 0.2rem 0 0.6rem; }
+.tag-photo { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; float: right; margin-left: 0.6rem; }
+.tag-messages { list-style: none; margin: 0.8rem 0 0; padding: 0; border-top: 1px solid var(--line); }
+.tag-messages li { padding: 0.55rem 0; border-bottom: 1px solid var(--line); font-size: 0.93rem; }
+.tag-messages time { display: block; color: var(--muted); font-size: 0.8rem; }
+.tag-messages .contact { color: var(--navy); font-weight: 550; }
+.tag-head-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.tag-public { min-height: 100vh; display: grid; place-items: start center; padding: 2.5rem 1rem; background: var(--bg, #f4f6fb); }
+.tag-public > .card { width: 100%; max-width: 480px; padding: 2rem; }
+.tag-public .brand { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; margin-bottom: 1.2rem; }
+.tag-public h1 { margin: 0.2rem 0 0.4rem; font-size: 1.5rem; }
+.tag-public textarea { min-height: 7rem; }
+.counter { text-align: right; font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
+.in-layout.tag-public { min-height: 0; padding: 0; background: none; }
+@media (max-width: 560px) {
+  .tag-card { grid-template-columns: 1fr; }
+  .tag-qr { width: 140px; height: 140px; }
+}
+.btn.disabled { opacity: 0.5; pointer-events: none; }
