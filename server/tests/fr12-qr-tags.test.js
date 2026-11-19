@@ -1,9 +1,8 @@
 /* TS-FR-12 FoundU QR tags. */
-const { signIn, app, request } = require('./helpers');
+const { signIn, app, request, sendAllPendingEmails } = require('./helpers');
 const { sent } = require('../src/lib/mailer');
 const { pool, query } = require('../src/db/pool');
 const { ref, jpeg } = require('./fixtures');
-const { sendPendingEmails } = require('../src/modules/notifications/service');
 const { TOKEN_BYTES } = require('../src/modules/tags/service');
 
 let R;
@@ -17,14 +16,20 @@ const finder = (agent = 'Finder phone') => ({ 'User-Agent': agent });
 const scan = (token, ua) => request(app).get(`/api/tags/${token}`).set(finder(ua));
 const write = (token, body, ua) => request(app).post(`/api/tags/${token}/messages`).set(finder(ua)).send(body);
 
+const deleteTags = () => query(`DELETE FROM qr_tags WHERE owner_id IN (SELECT user_id FROM users WHERE email IN ('sara.k@lau.edu', 'lea.n@lau.edu'))`);
+
 beforeAll(async () => {
   R = await ref();
   [sara, lea] = await Promise.all(['sara.k@lau.edu', 'lea.n@lau.edu'].map(signIn));
   saraId = (await query(`SELECT user_id FROM users WHERE email = 'sara.k@lau.edu'`)).rows[0].user_id;
+  // Start from the seed state whatever files ran before: the tests check Sara's exact tag list and that Lea has
+  // none, and TC-FR-12.8 expects the email copy, which Sara only gets with email notifications on (the default)
+  await deleteTags();
+  await query('UPDATE users SET email_notifications = true WHERE user_id = $1', [saraId]);
 });
 
 afterAll(async () => {
-  await query(`DELETE FROM qr_tags WHERE owner_id IN (SELECT user_id FROM users WHERE email IN ('sara.k@lau.edu', 'lea.n@lau.edu'))`);
+  await deleteTags();
   await query(`DELETE FROM notifications WHERE type = 'QR_MESSAGE'`);
   await query('UPDATE organizations SET qr_enabled = true WHERE organization_id = $1', [R.lau]);
   await pool.end();
@@ -145,7 +150,7 @@ describe('TS-FR-12 FoundU QR tags', () => {
   });
 
   test('TC-FR-12.8-V email copy sent to the owner', async () => {
-    await sendPendingEmails();
+    await sendAllPendingEmails(); // what the 20-second job does
     const mail = sent.filter((m) => m.to === 'sara.k@lau.edu').find((m) => m.text.includes('Found in Nicol Hall, room 302'));
     expect(mail).toBeDefined();
   });

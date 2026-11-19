@@ -1,6 +1,6 @@
 /* TS-FR-8 Notifications.  The message, badge and moderation events are checked by the tests of their own modules
    (FR-7, FR-13, FR-15); this file covers the other events, the counter, read state and emails. */
-const { signIn } = require('./helpers');
+const { signIn, sendAllPendingEmails } = require('./helpers');
 const { pool, query } = require('../src/db/pool');
 const { ref, today } = require('./fixtures');
 const events = require('../src/lib/events');
@@ -45,12 +45,12 @@ beforeEach(async () => {
   await events.settle();
   await query(`UPDATE posts SET status = 'CLOSED' WHERE status = 'OPEN'`);
   await query('DELETE FROM notifications WHERE user_id = ANY ($1)', [[uid.sara, uid.omar, uid.lea]]);
-  await sendPendingEmails(); // nothing left from other files
+  await sendAllPendingEmails(); // nothing left from other files
   await emails(false);
 });
 afterAll(async () => {
   await events.settle();
-  await emails(false);
+  await emails(true); // back to the default (FR-1.11): files that run later expect Sara's email copies
   await pool.end();
 });
 

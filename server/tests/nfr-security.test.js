@@ -133,15 +133,21 @@ describe('NFR-12.1 every action is authorized on the server', () => {
   test('TC-NFR-12.1-V: every page-level read answers 200 to a role it allows', async () => {
     // The query a page sends with the two reads that need one
     const params = { '/admin/report.csv': { from: '2026-01-01', to: today() } };
+    let tagId;
     if (has('post', '/tags')) {
-      const tag = (await as.sara.post('/api/tags').field('label', 'Keys').expect(201)).body;
-      params['/tags/sheet'] = { ids: String(tag.id) };
+      tagId = (await as.sara.post('/api/tags').field('label', 'Keys').expect(201)).body.id;
+      params['/tags/sheet'] = { ids: String(tagId) };
     }
     const failures = [];
-    for (const r of ROUTES.filter((x) => x.auth && x.method === 'get' && !x.path.includes(':'))) {
-      const agent = as[r.role ? PERMITTED[r.role] : 'sara'];
-      const res = await agent.get(`/api${r.path}`).query(params[r.path] || {});
-      if (res.status !== 200) failures.push(`${r.path} -> ${res.status}`);
+    try {
+      for (const r of ROUTES.filter((x) => x.auth && x.method === 'get' && !x.path.includes(':'))) {
+        const agent = as[r.role ? PERMITTED[r.role] : 'sara'];
+        const res = await agent.get(`/api${r.path}`).query(params[r.path] || {});
+        if (res.status !== 200) failures.push(`${r.path} -> ${res.status}`);
+      }
+    } finally {
+      // The tag is only needed for the sheet read; left behind, it would change Sara's tag list in TS-FR-12
+      if (tagId) await query('DELETE FROM qr_tags WHERE tag_id = $1', [tagId]);
     }
     expect(failures).toEqual([]);
   });

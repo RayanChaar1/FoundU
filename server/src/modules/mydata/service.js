@@ -157,7 +157,7 @@ async function deleteData(user) {
     );
     return removed;
   });
-  for (const f of files) storage.remove(f.storage_path, f.blurred_path); // after the commit
+  for (const f of files) await storage.remove(f.storage_path, f.blurred_path); // after the commit; gone before the answer
   return { deleted: true };
 }
 

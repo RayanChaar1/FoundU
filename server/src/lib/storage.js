@@ -60,8 +60,9 @@ async function blurExisting(storagePath) {
 
 const filePath = (name) => path.join(config.uploadDir, path.basename(name));
 
+/** Deletes stored files.  Resolves once they are gone; callers that do not need to wait may ignore the promise. */
 function remove(...names) {
-  for (const n of names) if (n) fs.rm(filePath(n), { force: true }, () => {});
+  return Promise.all(names.filter(Boolean).map((n) => fs.promises.rm(filePath(n), { force: true }).catch(() => {})));
 }
 
 module.exports = { savePhoto, blurExisting, filePath, remove, ACCEPTED };

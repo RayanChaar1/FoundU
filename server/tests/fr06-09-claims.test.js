@@ -1,5 +1,5 @@
 /* TS-FR-6 Claims and Ownership Verification, TS-FR-9 Item Status and Handover. */
-const { signIn } = require('./helpers');
+const { signIn, sendAllPendingEmails } = require('./helpers');
 const { pool, query } = require('../src/db/pool');
 const { ref, today } = require('./fixtures');
 const { canTransition } = require('../src/lib/postStatus');
@@ -470,7 +470,7 @@ describe('TS-FR-9 Item Status and Handover', () => {
 describe('TS-FR-8 notification emails', () => {
   test('TC-FR-8.2-V a claim approval is emailed by the sweep', async () => {
     await query('UPDATE users SET email_notifications = true WHERE user_id = $1', [uid.sara]);
-    await sendPendingEmails(); // clear the backlog
+    await sendAllPendingEmails(); // clear the backlog
     await approved();
     const count = await sendPendingEmails();
     expect(count).toBeGreaterThanOrEqual(1);

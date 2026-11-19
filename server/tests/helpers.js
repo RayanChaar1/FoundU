@@ -2,6 +2,7 @@ const request = require('supertest');
 const { createApp } = require('../src/app');
 const { sent } = require('../src/lib/mailer');
 const { query } = require('../src/db/pool');
+const { sendPendingEmails } = require('../src/modules/notifications/service');
 
 const app = createApp();
 
@@ -22,4 +23,20 @@ async function signIn(email) {
   return agent;
 }
 
-module.exports = { app, request, lastCode, signIn };
+/**
+ * Runs the 20-second email job until it has looked at every waiting notification.  One run handles only the
+ * oldest 200, and the files that ran before may have left several hundred, so a single run can miss the
+ * notification under test.  Stops when a run makes no progress (failed emails wait for a later run, FR-8.2).
+ */
+async function sendAllPendingEmails() {
+  const waiting = async () => (await query('SELECT count(*)::int AS n FROM notifications WHERE NOT email_checked')).rows[0].n;
+  let before = await waiting();
+  while (before > 0) {
+    await sendPendingEmails();
+    const after = await waiting();
+    if (after >= before) return;
+    before = after;
+  }
+}
+
+module.exports = { app, request, lastCode, signIn, sendAllPendingEmails };
