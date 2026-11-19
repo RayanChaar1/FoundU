@@ -6,7 +6,7 @@ import Field from '../components/Field';
 
 /* FR-1.3 to FR-1.7: sign in with a one-time code sent to the organization email, then create the profile. */
 export default function SignIn() {
-  const { refresh } = useAuth();
+  const { refresh, notice } = useAuth();
   const [step, setStep] = useState('email');
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
@@ -75,6 +75,7 @@ export default function SignIn() {
             <form onSubmit={sendCode} noValidate>
               <h2>Sign in</h2>
               <p className="hint">Use the email address of your university or company.</p>
+              {notice && !error && <div className="alert info" role="status">{notice}</div>}
               {error && <div className="alert error">{error.message}</div>}
               <Field id="email" label="Organization email" error={error?.fields?.email}>
                 <input id="email" type="email" autoComplete="email" autoFocus required value={email}

@@ -7,6 +7,41 @@ const storage = require('../../lib/storage');
 
 const REMOVED = 'Removed after the retention period.';
 
+/**
+ * Removes the personal data of one post inside a transaction: owner, title, description, answer, photos, history,
+ * contacts, claims and messages.  `text` replaces the removed texts.  Returns the photo files to delete after the commit.
+ * Also used when a user deletes their data (FR-17.7).
+ */
+async function anonymizePost(db, id, now, text) {
+  await db.query(
+    `UPDATE posts
+        SET owner_id = NULL,
+            title = CASE type WHEN 'LOST' THEN 'Lost item' ELSE 'Found item' END,
+            description = '',
+            verification_question = CASE type WHEN 'FOUND' THEN 'Removed' END,
+            verification_answer_enc = CASE type WHEN 'FOUND' THEN '' END,
+            anonymized_at = $2
+      WHERE post_id = $1`,
+    [id, now],
+  );
+  const { rows: photos } = await db.query('DELETE FROM photos WHERE post_id = $1 RETURNING storage_path, blurred_path', [id]);
+  await db.query('DELETE FROM post_history WHERE post_id = $1', [id]); // older titles and descriptions
+  await db.query('UPDATE post_contacts SET sender_id = NULL, body = $2 WHERE post_id = $1', [id, text]);
+  await db.query(
+    `UPDATE claims SET claimant_id = NULL, answer_text = $2::text, description = NULL,
+                       rejection_reason = CASE WHEN rejection_reason IS NOT NULL THEN $2::text END,
+                       cancel_reason = CASE WHEN cancel_reason IS NOT NULL THEN $2::text END,
+                       handover_code_enc = NULL, handover_code_hash = NULL
+      WHERE post_id = $1`,
+    [id, text],
+  );
+  await db.query(
+    'UPDATE messages SET sender_id = NULL, body = $2 WHERE claim_id IN (SELECT claim_id FROM claims WHERE post_id = $1)',
+    [id, text],
+  );
+  return photos;
+}
+
 /** Anonymizes every post closed for longer than its organization's retention period at `now`.  Returns their ids. */
 async function anonymizeExpired(now = new Date()) {
   const { rows } = await query(
@@ -18,34 +53,7 @@ async function anonymizeExpired(now = new Date()) {
   );
   const done = [];
   for (const { post_id: id } of rows) {
-    const files = await transaction(async (db) => {
-      await db.query(
-        `UPDATE posts
-            SET owner_id = NULL,
-                title = CASE type WHEN 'LOST' THEN 'Lost item' ELSE 'Found item' END,
-                description = '',
-                verification_question = CASE type WHEN 'FOUND' THEN 'Removed' END,
-                verification_answer_enc = CASE type WHEN 'FOUND' THEN '' END,
-                anonymized_at = $2
-          WHERE post_id = $1`,
-        [id, now],
-      );
-      const { rows: photos } = await db.query('DELETE FROM photos WHERE post_id = $1 RETURNING storage_path, blurred_path', [id]);
-      await db.query('DELETE FROM post_history WHERE post_id = $1', [id]); // older titles and descriptions
-      await db.query(`UPDATE post_contacts SET sender_id = NULL, body = $2 WHERE post_id = $1`, [id, REMOVED]);
-      await db.query(
-        `UPDATE claims SET claimant_id = NULL, answer_text = $2::text, description = NULL,
-                           rejection_reason = CASE WHEN rejection_reason IS NOT NULL THEN $2::text END,
-                           cancel_reason = CASE WHEN cancel_reason IS NOT NULL THEN $2::text END, handover_code_enc = NULL, handover_code_hash = NULL
-          WHERE post_id = $1`,
-        [id, REMOVED],
-      );
-      await db.query(
-        `UPDATE messages SET sender_id = NULL, body = $2 WHERE claim_id IN (SELECT claim_id FROM claims WHERE post_id = $1)`,
-        [id, REMOVED],
-      );
-      return photos;
-    });
+    const files = await transaction((db) => anonymizePost(db, id, now, REMOVED));
     for (const p of files) storage.remove(p.storage_path, p.blurred_path); // after the commit
     done.push(id);
   }
@@ -61,4 +69,4 @@ async function purgeAuditLog(now = new Date()) {
   return rowCount;
 }
 
-module.exports = { anonymizeExpired, purgeAuditLog, REMOVED, AUDIT_MONTHS };
+module.exports = { anonymizeExpired, anonymizePost, purgeAuditLog, REMOVED, AUDIT_MONTHS };
