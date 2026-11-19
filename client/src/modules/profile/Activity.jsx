@@ -90,6 +90,7 @@ export default function Activity() {
                 <span>Hide me from the karma leaderboard</span>
               </label>
             )}
+            <p className="hint" style={{ margin: '0.6rem 0 0' }}>Correct, download or delete your data on <Link to="/my-data">My data</Link>.</p>
           </section>
         </div>
       </div>

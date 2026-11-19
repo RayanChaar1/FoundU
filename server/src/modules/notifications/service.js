@@ -12,12 +12,14 @@ const config = require('../../config');
  */
 async function notify(userId, type, content, { link = null, claimId = null, db = { query } } = {}) {
   if (!userId) return null;
+  // A user who deleted their data (FR-17.7) gets nothing, even from a job that started before the deletion
   const { rows } = await db.query(
-    `INSERT INTO notifications (user_id, type, content, link, claim_id) VALUES ($1, $2, $3, $4, $5)
+    `INSERT INTO notifications (user_id, type, content, link, claim_id)
+     SELECT $1, $2, $3, $4, $5 WHERE EXISTS (SELECT 1 FROM users WHERE user_id = $1 AND status <> 'DELETED')
      RETURNING notification_id`,
     [userId, type, content.slice(0, 500), link, claimId],
   );
-  return rows[0].notification_id;
+  return rows[0]?.notification_id ?? null;
 }
 
 /** Notifies several users with the same content. */
