@@ -1,0 +1,32 @@
+/* Karma points and badges (FR-13). */
+.karma-layout { display: grid; grid-template-columns: 1.2fr 1fr; gap: 1rem; align-items: start; }
+.karma-total { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.75rem; }
+.karma-total strong { font-size: 2.4rem; color: var(--navy); line-height: 1; }
+.karma-total span { color: var(--muted); }
+.karma-badges { list-style: none; margin: 0 0 1rem; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+.karma-badges li {
+  display: grid; justify-items: center; text-align: center; gap: 0.1rem; padding: 0.6rem 0.3rem;
+  border: 1px dashed var(--line); border-radius: 12px; opacity: 0.45; font-size: 0.85rem;
+}
+.karma-badges li > span:first-child { font-size: 1.5rem; }
+.karma-badges li.earned { opacity: 1; border-style: solid; border-color: #f0d38a; background: #fff8e6; }
+.karma-history, .karma-board { list-style: none; margin: 0.4rem 0 0; padding: 0; }
+.karma-history li, .karma-board li {
+  display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; padding: 0.45rem 0; border-bottom: 1px solid var(--line);
+}
+.karma-history li:last-child, .karma-board li:last-child { border-bottom: 0; }
+.karma-history .plus { color: var(--green); }
+.karma-history .minus { color: var(--red); }
+.karma-board li span:nth-child(2) { flex: 1; }
+.karma-board .rank {
+  display: grid; place-items: center; width: 1.8rem; height: 1.8rem; border-radius: 50%; background: #eef1f6;
+  font-weight: 650; font-size: 0.85rem; color: var(--navy);
+}
+.karma-board li:nth-child(-n + 3) .rank { background: #fff4d6; color: #8a5a00; }
+.karma-board li.me { background: var(--blue-soft); border-radius: 8px; padding-inline: 0.4rem; }
+.karma-hide { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.9rem; font-size: 0.9rem; }
+.karma-hide input { width: auto; }
+@media (max-width: 860px) {
+  .karma-layout { grid-template-columns: 1fr; }
+  .karma-badges { grid-template-columns: repeat(2, 1fr); }
+}
