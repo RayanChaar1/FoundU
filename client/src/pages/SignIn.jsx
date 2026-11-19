@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router';
 import { api } from '../api';
 import { useAuth } from '../auth';
 import Field from '../components/Field';
@@ -80,6 +81,9 @@ export default function SignIn() {
                   placeholder="name@lau.edu" onChange={(e) => setEmail(e.target.value)} />
               </Field>
               <button className="btn block" disabled={busy || !email}>{busy ? 'Sending…' : 'Send me a code'}</button>
+              <p className="hint" style={{ marginTop: '1rem', textAlign: 'center' }}>
+                Is your organization not on FoundU yet?  <Link to="/join">Request access</Link>
+              </p>
             </form>
           )}
 

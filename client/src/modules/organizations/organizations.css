@@ -1,0 +1,25 @@
+/* FR-18 organization management */
+.join-page { min-height: 100vh; display: grid; place-items: start center; padding: 2.5rem 1rem; background: var(--bg, #f4f6fb); }
+.join-page > .card { width: 100%; max-width: 640px; padding: 2rem; }
+.join-page h1 { margin: 0 0 0.3rem; font-size: 1.6rem; }
+.join-page .brand { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; margin-bottom: 1.2rem; }
+.list-rows { display: grid; gap: 0.6rem; margin-bottom: 0.6rem; }
+.list-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.5rem; align-items: end; }
+.campus-row { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr) auto; gap: 0.5rem; align-items: end; }
+.list-row .field, .campus-row .field { margin: 0; }
+.dns-record { display: block; font-family: ui-monospace, Menlo, monospace; font-size: 0.85rem; background: #f1f4fa;
+  border: 1px solid var(--line); border-radius: 6px; padding: 0.45rem 0.6rem; margin: 0.4rem 0; word-break: break-all; }
+.request-card { padding: 1.2rem 1.4rem; margin-bottom: 1rem; }
+.request-card h2 { margin: 0; font-size: 1.15rem; }
+.request-card dl { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 0.3rem 0.8rem; margin: 0.8rem 0; font-size: 0.92rem; }
+.request-card dt { color: var(--muted); }
+.request-card dd { margin: 0; }
+.checks { list-style: none; padding: 0; margin: 0.4rem 0 0.8rem; font-size: 0.92rem; }
+.checks li { padding: 0.15rem 0; }
+.switch-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding: 0.7rem 0; border-bottom: 1px solid var(--line); }
+.switch-row:last-child { border-bottom: 0; }
+.switch-row p { margin: 0.15rem 0 0; }
+@media (max-width: 640px) {
+  .campus-row { grid-template-columns: 1fr 1fr; }
+  .request-card dl { grid-template-columns: 1fr; }
+}

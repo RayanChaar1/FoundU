@@ -6,3 +6,4 @@ uploads/
 outbox/
 *.log
 .DS_Store
+server/dev-dns.json

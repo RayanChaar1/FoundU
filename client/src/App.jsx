@@ -9,7 +9,7 @@ import EditPost from './pages/EditPost';
 import Claims from './pages/Claims';
 import ClaimDetail from './pages/ClaimDetail';
 import MatchSettings from './pages/MatchSettings';
-import { moduleRoutes } from './modules/registry';
+import { moduleRoutes, publicRoutes } from './modules/registry';
 
 export default function App() {
   const { user } = useAuth();
@@ -20,6 +20,7 @@ export default function App() {
     return (
       <Routes>
         <Route path="/signin" element={<SignIn />} />
+        {publicRoutes().map((r) => <Route key={r.path} path={r.path} element={r.element} />)}
         <Route path="*" element={<Navigate to="/signin" replace />} />
       </Routes>
     );
