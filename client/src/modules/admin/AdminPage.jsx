@@ -4,6 +4,7 @@ import Places from './Places';
 import Dropoffs from './Dropoffs';
 import Settings from './Settings';
 import Report from './Report';
+import Organization from '../organizations/Organization';
 
 const TABS = [
   ['users', 'Users', Users],
@@ -11,6 +12,7 @@ const TABS = [
   ['dropoffs', 'Drop-off points', Dropoffs],
   ['settings', 'Parameters', Settings],
   ['report', 'Report', Report],
+  ['organization', 'Organization', Organization], // FR-18.5 to FR-18.8
 ];
 
 /* The administration page: one tab per part of FR-16; the tab is kept in the address so it can be bookmarked. */

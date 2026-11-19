@@ -4,6 +4,7 @@ import './karma.css';
 
 export default {
   order: 40,
-  routes: [{ path: '/leaderboard', element: <Leaderboard /> }],
-  nav: [{ to: '/leaderboard', label: 'Karma' }],
+  // FR-18.6: hidden when the organization turned karma points off
+  routes: [{ path: '/leaderboard', element: <Leaderboard />, show: (u) => u?.karmaEnabled }],
+  nav: [{ to: '/leaderboard', label: 'Karma', show: (u) => u?.karmaEnabled }],
 };
