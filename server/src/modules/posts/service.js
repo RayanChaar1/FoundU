@@ -150,7 +150,7 @@ async function edit(user, id, input) {
 
 /** FR-10.4, FR-10.5: delete a post without an approved claim; otherwise it can only be closed. */
 async function remove(user, id) {
-  const post = await ownPost(user, id);
+  await ownPost(user, id); // only the owner can delete
   if (await repo.hasApprovedClaim(id)) throw conflict('This post has an approved claim.  Close it instead.');
   const photos = await repo.photosOf(id);
   await repo.deletePost(id);

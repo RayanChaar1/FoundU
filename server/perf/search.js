@@ -12,7 +12,6 @@ const WORDS = ['iphone','wallet','bottle','backpack','umbrella','laptop','airpod
     queries.push(k === 0 ? pick() : k === 1 ? `${pick()} ${pick()}` : `${pick()} ${pick()} ${pick()}`);
   }
   const results = [];
-  let empty = 0;
   for (const [i, q] of queries.entries()) {
     const r = await timed(`/api/posts?q=${encodeURIComponent(q)}`, cookies[i % cookies.length]);
     if (r.status !== 200) throw new Error(`${q} -> ${r.status}`);

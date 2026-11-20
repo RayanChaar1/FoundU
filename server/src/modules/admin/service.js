@@ -356,7 +356,7 @@ async function report(admin, from, to) {
     STATUS[r.status], r.returned_on || r.status === 'RETURNED' ? 'Yes' : 'No', r.returned_on,
   ]);
   const csv = [header, ...lines].map((l) => l.map(csvField).join(',')).join('\r\n');
-  return { csv: `﻿${csv}\r\n`, count: rows.length, filename: `foundu-posts-${from}-to-${to}.csv` };
+  return { csv: `\uFEFF${csv}\r\n`, count: rows.length, filename: `foundu-posts-${from}-to-${to}.csv` };
 }
 
 module.exports = {

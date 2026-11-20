@@ -8,7 +8,6 @@ let R;
 let maya;
 let karim;
 let sara;
-let omar;
 const uid = {};
 const cleanup = []; // SQL run after the tests, in reverse order
 
@@ -35,8 +34,8 @@ beforeAll(async () => {
   for (const e of ['maya.azar@lau.edu', 'k.saad@lau.edu', 'sara.k@lau.edu', 'omar.h@lau.edu', 'lea.n@lau.edu', 'john@acme.com']) {
     uid[e.split(/[.@]/)[0]] = await user(e);
   }
-  [maya, karim, sara, omar] = await Promise.all(
-    ['maya.azar@lau.edu', 'k.saad@lau.edu', 'sara.k@lau.edu', 'omar.h@lau.edu'].map(signIn));
+  [maya, karim, sara] = await Promise.all(
+    ['maya.azar@lau.edu', 'k.saad@lau.edu', 'sara.k@lau.edu'].map(signIn));
 });
 
 afterAll(async () => {
@@ -225,7 +224,7 @@ describe('TS-FR-16 Administration', () => {
     const res = await maya.get('/api/admin/report.csv?from=2025-10-01&to=2025-10-31').expect(200);
     expect(res.headers['content-type']).toMatch(/^text\/csv/);
     expect(res.headers['content-disposition']).toBe('attachment; filename="foundu-posts-2025-10-01-to-2025-10-31.csv"');
-    const lines = res.text.replace(/^﻿/, '').trim().split('\r\n');
+    const lines = res.text.replace(/^\uFEFF/, '').trim().split('\r\n');
     expect(lines[0]).toBe('Post,Type,Title,Category,Campus,Building,Posted on,Status,Returned,Returned on');
     expect(lines).toHaveLength(6); // five October posts, no September post
     expect(lines.filter((l) => l.includes(',Returned,Yes,'))).toHaveLength(4);
