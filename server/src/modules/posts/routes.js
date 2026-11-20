@@ -16,6 +16,8 @@ const photos = (req, res, next) =>
   });
 
 const id = z.coerce.number().int().positive();
+/** A required choice (category, building): the same message whether the field is empty or missing (FR-2.5). */
+const choice = (message) => z.preprocess((v) => (v === '' ? undefined : v), z.coerce.number({ error: message }).int(message).positive(message));
 const text = (max, message) => z.string({ error: message }).trim().min(1, message).max(max, `At most ${max} characters.`);
 
 /** Date (YYYY-MM-DD) and optional approximate time (HH:MM), never in the future. */
@@ -32,8 +34,8 @@ function eventDatetime(v, ctx) {
 
 const common = {
   title: text(80, 'Enter a title.'),
-  categoryId: id.or(z.literal('').transform(() => undefined)).refine(Boolean, 'Choose a category.'),
-  locationId: id.or(z.literal('').transform(() => undefined)).refine(Boolean, 'Choose a building.'),
+  categoryId: choice('Choose a category.'),
+  locationId: choice('Choose a building.'),
   description: z.string().trim().max(1000, 'At most 1,000 characters.').default(''),
   ...when,
 };

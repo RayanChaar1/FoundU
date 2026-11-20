@@ -75,6 +75,14 @@ describe('TS-FR-2 Lost Item Posting', () => {
     expect(Object.keys(res.body.fields).sort()).toEqual(['categoryId', 'date', 'locationId', 'title']);
   });
 
+  test('TC-FR-2.5-D: each missing field has its own message, whether sent empty or not sent', async () => {
+    const messages = { title: 'Enter a title.', categoryId: 'Choose a category.', locationId: 'Choose a building.', date: 'Enter the date.' };
+    const notSent = await sara.post('/api/posts/lost').field('description', 'Nothing else').expect(400);
+    expect(notSent.body.fields).toEqual(messages);
+    const empty = await sara.post('/api/posts/lost').field('title', '').field('categoryId', '').field('locationId', '').field('date', '').expect(400);
+    expect(empty.body.fields).toEqual(messages);
+  });
+
   test('TC-FR-2.6-D: unsupported format refused', async () => {
     const res = await sara.post('/api/posts/lost').field('title', 'Pdf').field('categoryId', R.phone)
       .field('locationId', R.nicol).field('date', today())
