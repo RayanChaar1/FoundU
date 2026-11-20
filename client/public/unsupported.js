@@ -1,3 +1,4 @@
+/* eslint-disable no-var -- this file runs in browsers older than ES2015 */
 /* NFR-8.1: runs only in browsers without JavaScript modules (for example Internet Explorer 11), which cannot run
    FoundU, and tells the user which browsers to use.  Plain ES5 on purpose. */
 (function () {
