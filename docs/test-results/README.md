@@ -10,8 +10,8 @@ keeps the member who designed the case in Phase III.
 | Jean-Marie Agha | [jean-marie-agha.xlsx](jean-marie-agha.xlsx) | 74 | 68 | 0 | 0 | 6 |
 | Ramez Naba | [ramez-naba.xlsx](ramez-naba.xlsx) | 74 | 71 | 0 | 2 | 1 |
 | Adam Jaat | [adam-jaat.xlsx](adam-jaat.xlsx) | 74 | 56 | 0 | 18 | 0 |
-| Mohamad Moubarak | [mohamad-moubarak.xlsx](mohamad-moubarak.xlsx) | 74 | 57 | 7 | 5 | 5 |
-| **All** | | **420** | **375** | **7** | **26** | **12** |
+| Mohamad Moubarak | [mohamad-moubarak.xlsx](mohamad-moubarak.xlsx) | 74 | 61 | 3 | 5 | 5 |
+| **All** | | **420** | **379** | **3** | **26** | **12** |
 
 ## How the cases were run
 
@@ -29,10 +29,10 @@ passed when run again keep their first failure in **Notes**.
 | --- | --- | --- |
 | TC-FR-2.5-D | A post sent without a category or building got "Invalid input" from the API | #48, merged; passed when run again |
 | TC-NFR-24.3-D | An injected advertising script ran: the client pages had no content security policy | #49, merged; passed when run again |
-| TC-NFR-15.3-V | No server module had a README | #50 |
-| TC-NFR-19.2-D | Nothing checked the licences of the dependencies | #51 |
-| TC-NFR-22.1-V | No privacy notice; notifications were never deleted after 6 months | #52 |
-| TC-NFR-18.3-V | Four merged pull requests (#21, #22, #39, #41) named no task | Descriptions linked to their work packages on 20 November |
+| TC-NFR-15.3-V | No server module had a README | #50, merged; passed when run again |
+| TC-NFR-19.2-D | Nothing checked the licences of the dependencies | #51, merged; passed when run again |
+| TC-NFR-22.1-V | No privacy notice; notifications were never deleted after 6 months | #52, merged; passed when run again |
+| TC-NFR-18.3-V | Five merged pull requests (#21, #22, #38, #39, #41) named no task | Descriptions linked to their work packages on 20 November; passed when run again |
 | TC-NFR-18.1-V, TC-NFR-18.1-D | The plan has phases and milestones, not two-week sprints with review records | Process: none |
 | TC-NFR-18.2-V | No merged pull request was approved by another member (required approvals set to 0) | Process: approvals back to 1 |
 
