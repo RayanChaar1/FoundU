@@ -2,7 +2,7 @@
 //   node perf/scale.js <users> <seconds> [posts]
 // Each virtual user belongs to one organization and browses its feed, searches, posts and map.  With [posts], that many
 // lost posts are published through the API at an even rate over the run, each copying an open found post of the
-// poster's organization, so every one has a match; at the end the script checks that each got its Smart Match result.
+// poster's organization (title, category, building and day), so every one has a match; at the end the script checks that each got its Smart Match result.
 const config = require('../src/config');
 const jwt = require('jsonwebtoken');
 const { Client } = require('pg');
@@ -24,7 +24,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     o.cookies = users.map((u) => `foundu_session=${jwt.sign({ sub: u.user_id, v: u.session_epoch }, config.jwtSecret, { expiresIn: '2h' })}`);
     o.campus = (await db.query(`SELECT campus_id FROM campuses WHERE organization_id = $1 ORDER BY campus_id LIMIT 1`, [o.id])).rows[0].campus_id;
     o.posts = (await db.query(`SELECT post_id FROM posts WHERE organization_id = $1 AND status = 'OPEN' LIMIT 2000`, [o.id])).rows.map((r) => r.post_id);
-    o.found = (await db.query(`SELECT title, category_id, location_id FROM posts WHERE organization_id = $1 AND status = 'OPEN' AND type = 'FOUND' LIMIT 200`, [o.id])).rows;
+    o.found = (await db.query(`SELECT title, category_id, location_id, to_char(event_datetime, 'YYYY-MM-DD') AS day FROM posts WHERE organization_id = $1 AND status = 'OPEN' AND type = 'FOUND' LIMIT 200`, [o.id])).rows;
   }
   const byPage = { feed: [], search: [], detail: [], map: [], header: [], publish: [] };
   const failed = {};
@@ -60,7 +60,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       const f = o.found[n % o.found.length];
       const form = new FormData();
       for (const [k, v] of Object.entries({ title: f.title, categoryId: f.category_id, locationId: f.location_id,
-        date: new Date().toISOString().slice(0, 10), description: 'Scale test post.' })) form.append(k, String(v));
+        date: f.day, description: 'Scale test post.' })) form.append(k, String(v)); // lost on the day it was found (FR-5.2)
       const t = performance.now();
       const res = await fetch(`${BASE}/api/posts/lost`, { method: 'POST', body: form, headers: { cookie: o.cookies[n % o.cookies.length] } })
         .then(async (x) => ({ status: x.status, body: await x.json() })).catch(() => ({ status: 0 }));
