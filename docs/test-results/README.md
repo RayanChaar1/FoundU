@@ -1,33 +1,49 @@
 # Test execution results (Phase IV, issue #16)
 
-Each member executes the Phase III test cases they designed and adds the signed sheet here, through their own
-pull request.  The sheets are filled as described in the execution guide that comes with them.
+The 420 Phase III test cases, in one sheet per designer.  Rayan El Chaar executed every case on 20 November 2026
+on his laptop, and signed each executed row (**Executed by**, **Execution date**).  The **Designed by** column
+keeps the member who designed the case in Phase III.
 
-| Member | File | Cases | Status |
-| --- | --- | --- | --- |
-| Rayan El Chaar | [rayan-el-chaar.xlsx](rayan-el-chaar.xlsx) | 124 | Executed: 123 pass, 1 not run (NFR-10.3-D, production setup) |
-| Jean-Marie Agha | `jean-marie-agha.xlsx` | 74 | To add |
-| Ramez Naba | `ramez-naba.xlsx` | 74 | To add |
-| Adam Jaat | `adam-jaat.xlsx` | 74 | To add |
-| Mohamad Moubarak | `mohamad-moubarak.xlsx` | 74 | To add |
+| Designer | File | Cases | Pass | Fail | Not run | To execute |
+| --- | --- | --- | --- | --- | --- | --- |
+| Rayan El Chaar | [rayan-el-chaar.xlsx](rayan-el-chaar.xlsx) | 124 | 123 | 0 | 1 | 0 |
+| Jean-Marie Agha | [jean-marie-agha.xlsx](jean-marie-agha.xlsx) | 74 | 68 | 0 | 0 | 6 |
+| Ramez Naba | [ramez-naba.xlsx](ramez-naba.xlsx) | 74 | 71 | 0 | 2 | 1 |
+| Adam Jaat | [adam-jaat.xlsx](adam-jaat.xlsx) | 74 | 56 | 0 | 18 | 0 |
+| Mohamad Moubarak | [mohamad-moubarak.xlsx](mohamad-moubarak.xlsx) | 74 | 61 | 3 | 5 | 5 |
+| **All** | | **420** | **379** | **3** | **26** | **12** |
 
-## Adding your sheet
+## How the cases were run
 
-1. Run `npm test` and `npm run lint` on an up-to-date `main`, then execute the manual cases of your sheet.
-2. Fill **Actual result**, **Status**, **Executed by** (your name) and **Execution date** for every row.
-3. Commit it from your own GitHub account:
+- **Automated (npm test):** the Jest suite on an up-to-date `main`, each test named after its test case.
+- **Browser, API and tools on the laptop:** the scripts and checks named in the **Method** and **Notes** columns
+  (load and scale scripts in `server/perf/`, axe-core, the fresh-clone README check), on a scratch database.
+- **Review:** the report, the diagrams, the repository settings and OpenProject, against the expected result.
 
-   ```bash
-   git switch main && git pull
-   git switch -c test-results-<your-name>
-   cp "<your sheet>.xlsx" docs/test-results/<your-name>.xlsx
-   git add docs/test-results/<your-name>.xlsx
-   git commit -m "Test execution results: <your name>"
-   git push -u origin test-results-<your-name>
-   ```
+## Failed cases
 
-4. Open a pull request on GitHub, link it to issue #16, and update your row in the table above in the same
-   pull request.
+Every failed case has its fix in its own pull request and is run again once the fix is merged.  Cases that
+passed when run again keep their first failure in **Notes**.
 
-A failed case is recorded as Fail with what happened; it is fixed in its own pull request and run again.
-Cases marked "Not run" need the production setup of Appendix A and keep the reason given in Notes.
+| Case | What failed | Fix |
+| --- | --- | --- |
+| TC-FR-2.5-D | A post sent without a category or building got "Invalid input" from the API | #48, merged; passed when run again |
+| TC-NFR-24.3-D | An injected advertising script ran: the client pages had no content security policy | #49, merged; passed when run again |
+| TC-NFR-15.3-V | No server module had a README | #50, merged; passed when run again |
+| TC-NFR-19.2-D | Nothing checked the licences of the dependencies | #51, merged; passed when run again |
+| TC-NFR-22.1-V | No privacy notice; notifications were never deleted after 6 months | #52, merged; passed when run again |
+| TC-NFR-18.3-V | Five merged pull requests (#21, #22, #38, #39, #41) named no task | Descriptions linked to their work packages on 20 November; passed when run again |
+| TC-NFR-18.1-V, TC-NFR-18.1-D | The plan has phases and milestones, not two-week sprints with review records | Process: none |
+| TC-NFR-18.2-V | No merged pull request was approved by another member (required approvals set to 0) | Process: approvals back to 1 |
+
+TC-NFR-21.2-D passed for signed-in users on its first run, but a new sign-in during the mail outage got a
+generic error; fixed in #53 (merged), it now gets a clear 503 message.  The scale results of NFR-14 are in [security-performance.md](../security-performance.md).
+
+## Cases not run or still to execute
+
+- **Not run (26):** the production setup of Appendix A (hosting, firewall, backups, monitoring), browsers the
+  laptop does not have (NFR-8.1), and the review of the rules of use with LAU (NFR-23.1-V).  Each keeps its
+  reason in **Notes**.
+- **To execute (12):** the usability test with participants (NFR-6.1 to 6.3), the VoiceOver part of NFR-7-V,
+  the release (NFR-21.1), the review of the AI credit in the report (NFR-24.1-V), and the cases that need the
+  required approvals back at 1 (NFR-18.2-D, NFR-24.1-D).
