@@ -73,6 +73,14 @@ Any other `@lau.edu` or `@lau.edu.lb` address creates a new account on first sig
 
 Choose **Disconnect** on the same panel to go back to sign-in codes.
 
+### Email through SMTP during development
+
+Without SMTP settings, emails are written to `server/outbox/`.  To send them through SMTP (NFR-25.2), `server/dev/smtp.js` plays the part of the organization's mail server: STARTTLS with its own certificate, then a user name and password.
+
+1. Start it with `npm run smtp --workspace server`.  It listens on localhost:2587 and prints the path of its certificate.
+2. Start the API with `SMTP_HOST=localhost SMTP_PORT=2587 SMTP_USER=foundu SMTP_PASS=dev-smtp-pass NODE_EXTRA_CA_CERTS=<that path>`.
+3. Every email (sign-in codes, notifications) now appears in the SMTP server's window.  With a wrong password the server answers 535: the API logs the error and sends the notification at its next sweep, 20 seconds later.
+
 ## Scripts
 
 | Command | Purpose |
@@ -85,6 +93,7 @@ Choose **Disconnect** on the same panel to go back to sign-in codes.
 | `npm run db:reset` | Drop every table, migrate again and seed |
 | `npm run db:demo` | After `db:reset`, add the presentation data: posts on both campuses, a finished return, a QR tag and a report (photos from `server/demo/photos/`) |
 | `npm run idp --workspace server` | Start the development identity provider for single sign-on (port 4001) |
+| `npm run smtp --workspace server` | Start the development SMTP server (port 2587) |
 
 ## Security and performance
 
