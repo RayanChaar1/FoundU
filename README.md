@@ -89,6 +89,8 @@ Choose **Disconnect** on the same panel to go back to sign-in codes.
 
 The results of the security and performance checks are in [docs/security-performance.md](docs/security-performance.md).
 
+The execution results of the 420 Phase III test cases, one signed sheet per member, are in [docs/test-results/](docs/test-results/).
+
 **HTTPS (NFR-9).**  The demo runs over HTTP on the laptop.  To serve the API over HTTPS (TLS 1.2 or later only), set `TLS_CERT` and `TLS_KEY` in `server/.env` to a certificate and its key.  A certificate for local tests:
 
 ```bash
