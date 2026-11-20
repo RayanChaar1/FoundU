@@ -7,11 +7,11 @@ keeps the member who designed the case in Phase III.
 | Designer | File | Cases | Pass | Fail | Not run | To execute |
 | --- | --- | --- | --- | --- | --- | --- |
 | Rayan El Chaar | [rayan-el-chaar.xlsx](rayan-el-chaar.xlsx) | 124 | 123 | 0 | 1 | 0 |
-| Jean-Marie Agha | [jean-marie-agha.xlsx](jean-marie-agha.xlsx) | 74 | 67 | 1 | 0 | 6 |
+| Jean-Marie Agha | [jean-marie-agha.xlsx](jean-marie-agha.xlsx) | 74 | 68 | 0 | 0 | 6 |
 | Ramez Naba | [ramez-naba.xlsx](ramez-naba.xlsx) | 74 | 71 | 0 | 2 | 1 |
 | Adam Jaat | [adam-jaat.xlsx](adam-jaat.xlsx) | 74 | 56 | 0 | 18 | 0 |
 | Mohamad Moubarak | [mohamad-moubarak.xlsx](mohamad-moubarak.xlsx) | 74 | 56 | 8 | 5 | 5 |
-| **All** | | **420** | **373** | **9** | **26** | **12** |
+| **All** | | **420** | **374** | **8** | **26** | **12** |
 
 ## How the cases were run
 
@@ -22,11 +22,12 @@ keeps the member who designed the case in Phase III.
 
 ## Failed cases
 
-Every failed case has its fix in its own pull request and is run again once the fix is merged.
+Every failed case has its fix in its own pull request and is run again once the fix is merged.  Cases that
+passed when run again keep their first failure in **Notes**.
 
 | Case | What failed | Fix |
 | --- | --- | --- |
-| TC-FR-2.5-D | A post sent without a category or building got "Invalid input" from the API | #48 |
+| TC-FR-2.5-D | A post sent without a category or building got "Invalid input" from the API | #48, merged; passed when run again |
 | TC-NFR-24.3-D | An injected advertising script ran: the client pages had no content security policy | #49 |
 | TC-NFR-15.3-V | No server module had a README | #50 |
 | TC-NFR-19.2-D | Nothing checked the licences of the dependencies | #51 |
