@@ -36,8 +36,8 @@ passed when run again keep their first failure in **Notes**.
 | TC-NFR-18.1-V, TC-NFR-18.1-D | The plan has phases and milestones, not two-week sprints with review records | Process: none |
 | TC-NFR-18.2-V | No merged pull request was approved by another member (required approvals set to 0) | Process: approvals back to 1 |
 
-TC-NFR-21.2-D passed for signed-in users; the generic error a new sign-in got during the mail outage is fixed
-in #53.  The scale results of NFR-14 are in [security-performance.md](../security-performance.md).
+TC-NFR-21.2-D passed for signed-in users on its first run, but a new sign-in during the mail outage got a
+generic error; fixed in #53 (merged), it now gets a clear 503 message.  The scale results of NFR-14 are in [security-performance.md](../security-performance.md).
 
 ## Cases not run or still to execute
 
