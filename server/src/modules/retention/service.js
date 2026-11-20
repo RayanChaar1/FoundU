@@ -54,7 +54,7 @@ async function anonymizeExpired(now = new Date()) {
   const done = [];
   for (const { post_id: id } of rows) {
     const files = await transaction((db) => anonymizePost(db, id, now, REMOVED));
-    for (const p of files) storage.remove(p.storage_path, p.blurred_path); // after the commit
+    for (const p of files) await storage.remove(p.storage_path, p.blurred_path); // after the commit; gone before the post counts as done
     done.push(id);
   }
   return done;
