@@ -19,6 +19,8 @@
 | NFR-1 200 users, p95 within 2 s | `perf/load.js`, 200 users for 15 minutes; 600 users; overload | 119,297 requests, p95 31 ms, no error; 600 users: p95 32 ms, no error; when overloaded, extra requests get 503 "Try again" at once, the server keeps running and recovers | Pass (finding 6, fixed) |
 | NFR-2 Search on 50,000 posts within 2 s | `perf/search.js`, 500 varied searches | Slowest search 54 ms; p95 10 ms | Pass |
 | NFR-3 Smart Match within 10 s, 10,000 open posts | `perf/match.js`, 50 posts one after another; worst case; `perf/burst.js`, 200 posts in one minute | Slowest job 37 ms (611 ms in the worst case); during the burst every job ran and pages answered with p95 40 ms | Pass |
+| NFR-14.1 20 organizations of 10,000 users | `perf/scale-seed.js` and `perf/scale.js` (20 November, below): 200 users browsing across 20, then 21 organizations for 5 minutes | 39,758 and 39,683 requests, no error; p95 24 and 26 ms | Pass on the laptop (one server) |
+| NFR-14.2 1,000 posts a day, peak of 300 an hour | `perf/scale.js` with posts: the day compressed into 10 minutes, the peak hour into 3 minutes, while 200 users browse | Every post published (p95 11 and 10 ms) and every one got its Smart Match result (1,000 of 1,000, 300 of 300); browsing p95 23 and 22 ms, no error | Pass on the laptop |
 
 **About the demo and HTTPS.**  The demo runs on the laptop at `http://localhost`, where the browser and the server are on the same machine and nothing travels over a network.  HTTPS needs a certificate for a real domain, which comes with deployment; the server already serves HTTPS with TLS 1.2 or later as soon as the two settings are given.
 
@@ -35,6 +37,9 @@
 | 7 | **Text with a NUL character gave a server error** (found by the ZAP scan): PostgreSQL refuses `\u0000`, so a search or message containing it answered 500 "Something went wrong" (no internal details were shown). | Low | Fixed: the error handler answers 400 "Text cannot contain a null character."; test TC-NFR-11.1-D. |
 | 8 | **ZAP reported a SQL injection in the search** (`q`, high risk, medium confidence) because `wallet%` returned the same post as `wallet` while `walletXYZABCDEFGHIJ` returned none. | None (false positive) | Verified by hand: the query is a parameter (`$n`); full-text search (`websearch_to_tsquery`) ignores punctuation, so `wallet%` is the word `wallet`, and the `ILIKE` part escapes `%`.  `wallet' OR '1'='1` returns the one wallet, not the 11 posts, and `%` alone returns nothing. |
 | 9 | **Script text is returned as written in JSON** (ZAP: "Cross Site Scripting Weakness, persistent in JSON response", low): a `<script>` contact message comes back unchanged in My data. | Low | Kept: FoundU stores what users type and React escapes it when shown; JSON is served as `application/json` with `nosniff`, so a browser never runs it. |
+| 10 | **The client pages had no content security policy** (TC-NFR-24.3-D, 20 November): helmet sets one on the API only, so an advertising script injected into a page ran. | Medium | Fixed in #49: the built pages carry a policy (own scripts and API only, map tiles from OpenStreetMap); an injected inline script, an external script and a call to an unknown host are blocked. |
+| 11 | **Notifications and expired sign-in codes were never deleted** (TC-NFR-22.1-V): Table 58 keeps notifications 6 months, and FoundU had no privacy notice saying what it keeps and why. | Low | Fixed in #52: daily job `purge-short-lived`, and a public page `/privacy` listing every item kept, its purpose and how long. |
+| 12 | **A sign-in during a mail outage got a generic error** (TC-NFR-21.2-D): the code was kept and counted toward the limit of 5 an hour although it was never sent. | Low | Fixed in #53: 503 "We could not send your code right now.  Try again in a few minutes.", and the unsent code is deleted.  Notifications already waited for the mail server and were sent at the next sweep. |
 
 ## OWASP ZAP scan (20 November 2026)
 
@@ -99,4 +104,15 @@ No request failed (0 %, the limit is 1 %), and the p95 stayed between 30 and 35 
 
 **600 users (TC-NFR-1-D)** for two minutes: 47,581 requests (397 a second), p95 32 ms, no error; 600 users are not yet an overload for this laptop.  **Overload:** to see the protection work, the API was started with `MAX_IN_FLIGHT=20` and 600 users sent requests without any reading time for 20 seconds: 51,883 requests answered (p95 14 ms), 55,459 got the 503 message at once, 1,039 got 429 (users over 100 requests a minute); the server kept running, no data was lost, and once the users went back to normal browsing every request was answered again (p95 29 ms, no error).
 
-**Not covered on the laptop.**  NFR-1 asks for the optimal configuration of Appendix A, and NFR-14 for 20 organizations and several servers; both need the hosted environment.  These results, on one laptop that also ran the load, are a lower bound of what that environment gives.
+**NFR-14, 20 organizations (20 November).**  `npm run perf:scale-seed -- 20` added 20 organizations to the performance database, each with a campus, 10 buildings, 10,000 users and 2,500 posts (1,000 open), and brought LAU to 10,000 users: 210,002 users and 101,300 posts in all.  `perf/scale.js` spreads 200 users over every organization of 10,000 users or more; with posts, some of them publish lost posts that copy an open found post of their organization, and the script checks that each gets its Smart Match result.
+
+| Case | Load | Requests | Errors | Browsing p95 | Publishing p95 | Smart Match |
+| --- | --- | --- | --- | --- | --- | --- |
+| 14.1-V | 20 organizations, 200 users, 5 minutes | 39,758 | 0 | 23.8 ms | | |
+| 14.1-D | 21 organizations, 200 users, 5 minutes | 39,683 | 0 | 25.8 ms | | |
+| 14.2-V | 1,000 posts in 10 minutes (a day, about 140 times faster) | 80,519 | 0 | 23.4 ms | 10.7 ms | 1,000 of 1,000 |
+| 14.2-D | 300 posts in 3 minutes (the peak hour, 20 times faster) | 24,171 | 0 | 22.3 ms | 9.6 ms | 300 of 300 |
+
+A first run of 14.2 dated every lost post today, and since Smart Match does not compare a found post dated more than a day before the loss (FR-5.2), only some posts had a match to find; the script now dates each lost post on the day of the found post it copies.
+
+**Not covered on the laptop.**  NFR-1 asks for the optimal configuration of Appendix A, and NFR-14 for several servers; both need the hosted environment.  These results, on one laptop that also ran the load, are a lower bound of what that environment gives.
