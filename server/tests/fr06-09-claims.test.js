@@ -11,7 +11,6 @@ let R;
 let sara;
 let omar;
 let lea;
-let karim;
 const uid = {};
 
 const found = async (agent, extra = {}) => {
@@ -45,7 +44,7 @@ const wrongCode = (code) => String((Number(code) + 1) % 10000).padStart(4, '0');
 
 beforeAll(async () => {
   R = await ref();
-  [sara, omar, lea, karim] = await Promise.all(['sara.k@lau.edu', 'omar.h@lau.edu', 'lea.n@lau.edu', 'k.saad@lau.edu'].map(signIn));
+  [sara, omar, lea] = await Promise.all(['sara.k@lau.edu', 'omar.h@lau.edu', 'lea.n@lau.edu'].map(signIn));
   const { rows } = await query(`SELECT user_id, email FROM users WHERE email LIKE '%@lau.edu'`);
   for (const r of rows) uid[r.email.split('.')[0]] = r.user_id;
 });

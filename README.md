@@ -79,6 +79,7 @@ Choose **Disconnect** on the same panel to go back to sign-in codes.
 | --- | --- |
 | `npm run dev` | Start the API (port 4000) and the client (port 5173) with live reload |
 | `npm test` | Run the server test suite against a separate `foundu_test` database |
+| `npm run lint` | Check the server and client code with ESLint (`eslint.config.js`); it must report no error before a pull request |
 | `npm run db:migrate` | Apply new migrations from `server/src/db/migrations/` |
 | `npm run db:seed` | Replace all data with the demo organizations, users and categories |
 | `npm run db:reset` | Drop every table, migrate again and seed |

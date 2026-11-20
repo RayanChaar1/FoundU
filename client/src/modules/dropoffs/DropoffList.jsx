@@ -27,7 +27,7 @@ export default function DropoffList() {
     setBusy(true);
     setFields({});
     try {
-      const { campusId, ...body } = v; // eslint-disable-line no-unused-vars
+      const { campusId, ...body } = v;
       await api.post('/dropoffs', body);
       setV(EMPTY);
       setAdding(false);
