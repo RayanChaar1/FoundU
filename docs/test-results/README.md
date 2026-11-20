@@ -5,7 +5,7 @@ pull request.  The sheets are filled as described in the execution guide that co
 
 | Member | File | Cases | Status |
 | --- | --- | --- | --- |
-| Rayan El Chaar | [rayan-el-chaar.xlsx](rayan-el-chaar.xlsx) | 124 | Executed; 3 cases still open (NFR-11.1-V, NFR-25.2-V and -D) |
+| Rayan El Chaar | [rayan-el-chaar.xlsx](rayan-el-chaar.xlsx) | 124 | Executed; 2 cases still open (NFR-25.2-V and -D, which need an SMTP server) |
 | Jean-Marie Agha | `jean-marie-agha.xlsx` | 74 | To add |
 | Ramez Naba | `ramez-naba.xlsx` | 74 | To add |
 | Adam Jaat | `adam-jaat.xlsx` | 74 | To add |

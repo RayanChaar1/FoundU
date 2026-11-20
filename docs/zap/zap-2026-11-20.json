@@ -1,0 +1,661 @@
+{
+	"@programName": "ZAP",
+	"@version": "2.17.0",
+	"@generated": "Fri, 20 Nov 2026 15:30:35",
+	"created": "2026-11-20T13:30:35.575796Z",
+	"insights":[
+		{
+			"level": "Low",
+			"reason": "Warning",
+			"site": "",
+			"key": "insight.log.error",
+			"description": "ZAP errors logged - see the zap.log file for details",
+			"statistic": "17"
+		},
+		{
+			"level": "Low",
+			"reason": "Warning",
+			"site": "",
+			"key": "insight.log.warn",
+			"description": "ZAP warnings logged - see the zap.log file for details",
+			"statistic": "6"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://localhost:4100",
+			"key": "insight.code.2xx",
+			"description": "Percentage of responses with status code 2xx",
+			"statistic": "59"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://localhost:4100",
+			"key": "insight.code.4xx",
+			"description": "Percentage of responses with status code 4xx",
+			"statistic": "40"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://localhost:4100",
+			"key": "insight.endpoint.ctype.application/json",
+			"description": "Percentage of endpoints with content type application/json",
+			"statistic": "95"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://localhost:4100",
+			"key": "insight.endpoint.ctype.image/svg+xml",
+			"description": "Percentage of endpoints with content type image/svg+xml",
+			"statistic": "2"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://localhost:4100",
+			"key": "insight.endpoint.ctype.image/webp",
+			"description": "Percentage of endpoints with content type image/webp",
+			"statistic": "2"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://localhost:4100",
+			"key": "insight.endpoint.method.GET",
+			"description": "Percentage of endpoints with method GET",
+			"statistic": "91"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://localhost:4100",
+			"key": "insight.endpoint.method.POST",
+			"description": "Percentage of endpoints with method POST",
+			"statistic": "8"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://localhost:4100",
+			"key": "insight.endpoint.total",
+			"description": "Count of total endpoints",
+			"statistic": "49"
+		}
+	],
+	"site":[ 
+		{
+			"@name": "http://localhost:4100",
+			"@host": "localhost",
+			"@port": "4100",
+			"@ssl": "false",
+			"alerts": [ 
+				{
+					"pluginid": "40018",
+					"alertRef": "40018",
+					"alert": "SQL Injection",
+					"name": "SQL Injection",
+					"riskcode": "3",
+					"confidence": "2",
+					"riskdesc": "High (Medium)",
+					"desc": "<p>SQL injection may be possible.</p>",
+					"instances":[ 
+						{
+							"id": "48",
+							"uri": "http://localhost:4100/api/posts?q=wallet%25&type=FOUND&status=OPEN&categoryId=5&campusId=1&from=2026-11-01&to=2026-11-20&page=1",
+							"nodeName": "http:\/\/localhost:4100\/api\/posts (campusId,categoryId,from,page,q,status,to,type)",
+							"method": "GET",
+							"param": "q",
+							"attack": "wallet%",
+							"evidence": "",
+							"otherinfo": "The page results were successfully manipulated using the boolean conditions [wallet%] and [walletXYZABCDEFGHIJ]\nThe parameter value being modified was stripped from the HTML output for the purposes of the comparison.\nData was returned for the original parameter.\nThe vulnerability was detected by successfully restricting the data originally returned, by manipulating the parameter."
+						}
+					],
+					"count": "1",
+					"systemic": false,
+					"solution": "<p>Do not trust client side input, even if there is client side validation in place.</p><p>In general, type check all data on the server side.</p><p>If the application uses JDBC, use PreparedStatement or CallableStatement, with parameters passed by '?'</p><p>If the application uses ASP, use ADO Command Objects with strong type checking and parameterized queries.</p><p>If database Stored Procedures can be used, use them.</p><p>Do *not* concatenate strings into queries in the stored procedure, or use 'exec', 'exec immediate', or equivalent functionality!</p><p>Do not create dynamic SQL queries using simple string concatenation.</p><p>Escape all data received from the client.</p><p>Apply an 'allow list' of allowed characters, or a 'deny list' of disallowed characters in user input.</p><p>Apply the principle of least privilege by using the least privileged database user possible.</p><p>In particular, avoid using the 'sa' or 'db-owner' database users. This does not eliminate SQL injection, but minimizes its impact.</p><p>Grant the minimum database access that is necessary for the application.</p>",
+					"otherinfo": "<p>The page results were successfully manipulated using the boolean conditions [wallet%] and [walletXYZABCDEFGHIJ]</p><p>The parameter value being modified was stripped from the HTML output for the purposes of the comparison.</p><p>Data was returned for the original parameter.</p><p>The vulnerability was detected by successfully restricting the data originally returned, by manipulating the parameter.</p>",
+					"reference": "<p>https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html</p>",
+					"cweid": "89",
+					"wascid": "19",
+					"sourceid": "100"
+				},
+				{
+					"pluginid": "40014",
+					"alertRef": "40014",
+					"alert": "Cross Site Scripting Weakness (Persistent in JSON Response)",
+					"name": "Cross Site Scripting Weakness (Persistent in JSON Response)",
+					"riskcode": "1",
+					"confidence": "1",
+					"riskdesc": "Low (Low)",
+					"desc": "<p>A XSS attack was found in a JSON response, this might leave content consumers vulnerable to attack if they don't appropriately handle the data (response).</p>",
+					"instances":[ 
+						{
+							"id": "47",
+							"uri": "http://localhost:4100/api/me/data",
+							"nodeName": "http:\/\/localhost:4100\/api\/me\/data",
+							"method": "GET",
+							"param": "message",
+							"attack": "<script>alert(1);</script>",
+							"evidence": "",
+							"otherinfo": "Raised with LOW confidence as the Content-Type is not HTML."
+						}
+					],
+					"count": "1",
+					"systemic": false,
+					"solution": "<p>Phase: Architecture and Design</p><p>Use a vetted library or framework that does not allow this weakness to occur or provides constructs that make this weakness easier to avoid.</p><p>Examples of libraries and frameworks that make it easier to generate properly encoded output include Microsoft's Anti-XSS library, the OWASP ESAPI Encoding module, and Apache Wicket.</p><p></p><p>Phases: Implementation; Architecture and Design</p><p>Understand the context in which your data will be used and the encoding that will be expected. This is especially important when transmitting data between different components, or when generating outputs that can contain multiple encodings at the same time, such as web pages or multi-part mail messages. Study all expected communication protocols and data representations to determine the required encoding strategies.</p><p>For any data that will be output to another web page, especially any data that was received from external inputs, use the appropriate encoding on all non-alphanumeric characters.</p><p>Consult the XSS Prevention Cheat Sheet for more details on the types of encoding and escaping that are needed.</p><p></p><p>Phase: Architecture and Design</p><p>For any security checks that are performed on the client side, ensure that these checks are duplicated on the server side, in order to avoid CWE-602. Attackers can bypass the client-side checks by modifying values after the checks have been performed, or by changing the client to remove the client-side checks entirely. Then, these modified values would be submitted to the server.</p><p></p><p>If available, use structured mechanisms that automatically enforce the separation between data and code. These mechanisms may be able to provide the relevant quoting, encoding, and validation automatically, instead of relying on the developer to provide this capability at every point where output is generated.</p><p></p><p>Phase: Implementation</p><p>For every web page that is generated, use and specify a character encoding such as ISO-8859-1 or UTF-8. When an encoding is not specified, the web browser may choose a different encoding by guessing which encoding is actually being used by the web page. This can cause the web browser to treat certain sequences as special, opening up the client to subtle XSS attacks. See CWE-116 for more mitigations related to encoding/escaping.</p><p></p><p>To help mitigate XSS attacks against the user's session cookie, set the session cookie to be HttpOnly. In browsers that support the HttpOnly feature (such as more recent versions of Internet Explorer and Firefox), this attribute can prevent the user's session cookie from being accessible to malicious client-side scripts that use document.cookie. This is not a complete solution, since HttpOnly is not supported by all browsers. More importantly, XMLHTTPRequest and other powerful browser technologies provide read access to HTTP headers, including the Set-Cookie header in which the HttpOnly flag is set.</p><p></p><p>Assume all input is malicious. Use an \"accept known good\" input validation strategy, i.e., use an allow list of acceptable inputs that strictly conform to specifications. Reject any input that does not strictly conform to specifications, or transform it into something that does. Do not rely exclusively on looking for malicious or malformed inputs (i.e., do not rely on a deny list). However, deny lists can be useful for detecting potential attacks or determining which inputs are so malformed that they should be rejected outright.</p><p></p><p>When performing input validation, consider all potentially relevant properties, including length, type of input, the full range of acceptable values, missing or extra inputs, syntax, consistency across related fields, and conformance to business rules. As an example of business rule logic, \"boat\" may be syntactically valid because it only contains alphanumeric characters, but it is not valid if you are expecting colors such as \"red\" or \"blue.\"</p><p></p><p>Ensure that you perform input validation at well-defined interfaces within the application. This will help protect the application even if a component is reused or moved elsewhere.</p><p>\t</p>",
+					"otherinfo": "<p>Raised with LOW confidence as the Content-Type is not HTML.</p>",
+					"reference": "<p>https://owasp.org/www-community/attacks/xss/</p><p>https://cwe.mitre.org/data/definitions/79.html</p>",
+					"cweid": "79",
+					"wascid": "8",
+					"sourceid": "99"
+				},
+				{
+					"pluginid": "10112",
+					"alertRef": "10112",
+					"alert": "Session Management Response Identified",
+					"name": "Session Management Response Identified",
+					"riskcode": "0",
+					"confidence": "2",
+					"riskdesc": "Informational (Medium)",
+					"desc": "<p>The given response has been identified as containing a session management token. The 'Other Info' field contains a set of header tokens that can be used in the Header Based Session Management Method. If the request is in a context which has a Session Management Method set to \"Auto-Detect\" then this rule will change the session management to use the tokens identified.</p>",
+					"instances":[ 
+						{
+							"id": "19",
+							"uri": "http://localhost:4100/api/admin/matching",
+							"nodeName": "http:\/\/localhost:4100\/api\/admin\/matching",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "6",
+							"uri": "http://localhost:4100/api/admin/places",
+							"nodeName": "http:\/\/localhost:4100\/api\/admin\/places",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "7",
+							"uri": "http://localhost:4100/api/admin/settings",
+							"nodeName": "http:\/\/localhost:4100\/api\/admin\/settings",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "23",
+							"uri": "http://localhost:4100/api/audit",
+							"nodeName": "http:\/\/localhost:4100\/api\/audit",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "17",
+							"uri": "http://localhost:4100/api/campuses/3/hotspots",
+							"nodeName": "http:\/\/localhost:4100\/api\/campuses\/3\/hotspots",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "9",
+							"uri": "http://localhost:4100/api/campuses/3/map",
+							"nodeName": "http:\/\/localhost:4100\/api\/campuses\/3\/map",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "12",
+							"uri": "http://localhost:4100/api/claims",
+							"nodeName": "http:\/\/localhost:4100\/api\/claims",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "11",
+							"uri": "http://localhost:4100/api/claims/3",
+							"nodeName": "http:\/\/localhost:4100\/api\/claims\/3",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "21",
+							"uri": "http://localhost:4100/api/conversations",
+							"nodeName": "http:\/\/localhost:4100\/api\/conversations",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "20",
+							"uri": "http://localhost:4100/api/conversations/3",
+							"nodeName": "http:\/\/localhost:4100\/api\/conversations\/3",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "14",
+							"uri": "http://localhost:4100/api/dropoffs",
+							"nodeName": "http:\/\/localhost:4100\/api\/dropoffs",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "16",
+							"uri": "http://localhost:4100/api/dropoffs/3/items",
+							"nodeName": "http:\/\/localhost:4100\/api\/dropoffs\/3\/items",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "15",
+							"uri": "http://localhost:4100/api/leaderboard",
+							"nodeName": "http:\/\/localhost:4100\/api\/leaderboard",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "32",
+							"uri": "http://localhost:4100/api/me/activity",
+							"nodeName": "http:\/\/localhost:4100\/api\/me\/activity",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "24",
+							"uri": "http://localhost:4100/api/me/data",
+							"nodeName": "http:\/\/localhost:4100\/api\/me\/data",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "8",
+							"uri": "http://localhost:4100/api/me/karma",
+							"nodeName": "http:\/\/localhost:4100\/api\/me\/karma",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "22",
+							"uri": "http://localhost:4100/api/moderation/reports",
+							"nodeName": "http:\/\/localhost:4100\/api\/moderation\/reports",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "25",
+							"uri": "http://localhost:4100/api/notifications",
+							"nodeName": "http:\/\/localhost:4100\/api\/notifications",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "26",
+							"uri": "http://localhost:4100/api/notifications/unread",
+							"nodeName": "http:\/\/localhost:4100\/api\/notifications\/unread",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "31",
+							"uri": "http://localhost:4100/api/org/domains",
+							"nodeName": "http:\/\/localhost:4100\/api\/org\/domains",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "29",
+							"uri": "http://localhost:4100/api/org/settings",
+							"nodeName": "http:\/\/localhost:4100\/api\/org\/settings",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "35",
+							"uri": "http://localhost:4100/api/photos/3",
+							"nodeName": "http:\/\/localhost:4100\/api\/photos\/3",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "27",
+							"uri": "http://localhost:4100/api/platform/organizations",
+							"nodeName": "http:\/\/localhost:4100\/api\/platform\/organizations",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "28",
+							"uri": "http://localhost:4100/api/platform/organizations/3/dns",
+							"nodeName": "http:\/\/localhost:4100\/api\/platform\/organizations\/3\/dns",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "36",
+							"uri": "http://localhost:4100/api/posts",
+							"nodeName": "http:\/\/localhost:4100\/api\/posts",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "42",
+							"uri": "http://localhost:4100/api/posts?q=wallet&type=FOUND&status=OPEN&categoryId=5&campusId=1&from=2026-11-01&to=2026-11-20&page=1",
+							"nodeName": "http:\/\/localhost:4100\/api\/posts (campusId,categoryId,from,page,q,status,to,type)",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "37",
+							"uri": "http://localhost:4100/api/posts/3",
+							"nodeName": "http:\/\/localhost:4100\/api\/posts\/3",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "10",
+							"uri": "http://localhost:4100/api/posts/3/claims",
+							"nodeName": "http:\/\/localhost:4100\/api\/posts\/3\/claims",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "13",
+							"uri": "http://localhost:4100/api/posts/3/contacts",
+							"nodeName": "http:\/\/localhost:4100\/api\/posts\/3\/contacts",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "30",
+							"uri": "http://localhost:4100/api/posts/3/history",
+							"nodeName": "http:\/\/localhost:4100\/api\/posts\/3\/history",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "18",
+							"uri": "http://localhost:4100/api/posts/3/matches",
+							"nodeName": "http:\/\/localhost:4100\/api\/posts\/3\/matches",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "34",
+							"uri": "http://localhost:4100/api/reference",
+							"nodeName": "http:\/\/localhost:4100\/api\/reference",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "40",
+							"uri": "http://localhost:4100/api/tags",
+							"nodeName": "http:\/\/localhost:4100\/api\/tags",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "41",
+							"uri": "http://localhost:4100/api/tags/2TG_jPOIHrM8O8r3J6I9jw",
+							"nodeName": "http:\/\/localhost:4100\/api\/tags\/2TG_jPOIHrM8O8r3J6I9jw",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "38",
+							"uri": "http://localhost:4100/api/tags/3/messages",
+							"nodeName": "http:\/\/localhost:4100\/api\/tags\/3\/messages",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "39",
+							"uri": "http://localhost:4100/api/tags/sheet",
+							"nodeName": "http:\/\/localhost:4100\/api\/tags\/sheet",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "4",
+							"uri": "http://localhost:4100/api/users",
+							"nodeName": "http:\/\/localhost:4100\/api\/users",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "33",
+							"uri": "http://localhost:4100/api/users/3",
+							"nodeName": "http:\/\/localhost:4100\/api\/users\/3",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "5",
+							"uri": "http://localhost:4100/api/users/3/activity",
+							"nodeName": "http:\/\/localhost:4100\/api\/users\/3\/activity",
+							"method": "GET",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "46",
+							"uri": "http://localhost:4100/api/auth/start",
+							"nodeName": "http:\/\/localhost:4100\/api\/auth\/start ()({email})",
+							"method": "POST",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "43",
+							"uri": "http://localhost:4100/api/posts/3/claims",
+							"nodeName": "http:\/\/localhost:4100\/api\/posts\/3\/claims ()({answer,description})",
+							"method": "POST",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "44",
+							"uri": "http://localhost:4100/api/posts/7/contact",
+							"nodeName": "http:\/\/localhost:4100\/api\/posts\/7\/contact ()({message})",
+							"method": "POST",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						},
+						{
+							"id": "45",
+							"uri": "http://localhost:4100/api/reports",
+							"nodeName": "http:\/\/localhost:4100\/api\/reports ()({postId,reason,details})",
+							"method": "POST",
+							"param": "foundu_session",
+							"attack": "",
+							"evidence": "foundu_session",
+							"otherinfo": "cookie:foundu_session"
+						}
+					],
+					"count": "43",
+					"systemic": false,
+					"solution": "<p>This is an informational alert rather than a vulnerability and so there is nothing to fix.</p>",
+					"otherinfo": "<p>cookie:foundu_session</p>",
+					"reference": "<p>https://www.zaproxy.org/docs/desktop/addons/authentication-helper/session-mgmt-id/</p>",
+					"cweid": "-1",
+					"wascid": "-1",
+					"sourceid": "34"
+				},
+				{
+					"pluginid": "10104",
+					"alertRef": "10104",
+					"alert": "User Agent Fuzzer",
+					"name": "User Agent Fuzzer",
+					"riskcode": "0",
+					"confidence": "2",
+					"riskdesc": "Informational (Medium)",
+					"desc": "<p>Check for differences in response based on fuzzed User Agent (eg. mobile sites, access as a Search Engine Crawler). Compares the response statuscode and the hashcode of the response body with the original response.</p>",
+					"instances":[ 
+						{
+							"id": "51",
+							"uri": "http://localhost:4100/api/auth/start",
+							"nodeName": "http:\/\/localhost:4100\/api\/auth\/start ()({email})",
+							"method": "POST",
+							"param": "Header User-Agent",
+							"attack": "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "50",
+							"uri": "http://localhost:4100/api/posts/3/claims",
+							"nodeName": "http:\/\/localhost:4100\/api\/posts\/3\/claims ()({answer,description})",
+							"method": "POST",
+							"param": "Header User-Agent",
+							"attack": "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)",
+							"evidence": "",
+							"otherinfo": ""
+						},
+						{
+							"id": "49",
+							"uri": "http://localhost:4100/api/reports",
+							"nodeName": "http:\/\/localhost:4100\/api\/reports ()({postId,reason,details})",
+							"method": "POST",
+							"param": "Header User-Agent",
+							"attack": "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)",
+							"evidence": "",
+							"otherinfo": ""
+						}
+					],
+					"count": "3",
+					"systemic": true,
+					"solution": "",
+					"otherinfo": "",
+					"reference": "<p>https://owasp.org/wstg</p>",
+					"cweid": "0",
+					"wascid": "0",
+					"sourceid": "103"
+				}
+			]
+		}
+	],
+	"sequences":[
+	]
+
+}
