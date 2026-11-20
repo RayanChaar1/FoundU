@@ -21,12 +21,19 @@ async function startSignIn(email) {
   if ((await repo.countRecentOtps(email)) >= 5) throw new HttpError(429, 'Too many codes requested.  Try again later.');
   const code = randomDigits(6);
   const expiresAt = new Date(Date.now() + config.otpMinutes * 60 * 1000); // FR-1.4
-  await repo.insertOtp(email, await hash(code), expiresAt);
-  await sendMail({
-    to: email,
-    subject: 'Your FoundU sign-in code',
-    text: `Your FoundU code is ${code}.  It expires in ${config.otpMinutes} minutes.\nIf you did not ask for it, ignore this email.`,
-  });
+  const otpId = await repo.insertOtp(email, await hash(code), expiresAt);
+  try {
+    await sendMail({
+      to: email,
+      subject: 'Your FoundU sign-in code',
+      text: `Your FoundU code is ${code}.  It expires in ${config.otpMinutes} minutes.\nIf you did not ask for it, ignore this email.`,
+    });
+  } catch (err) {
+    // The email service is down (found by TC-NFR-21.2-D): say so, and do not count the unsent code against the limit
+    console.error(`[email] sign-in code for ${email} not sent: ${err.message}`);
+    await repo.deleteOtp(otpId);
+    throw new HttpError(503, 'We could not send your code right now.  Try again in a few minutes.');
+  }
   return { organization: org.name };
 }
 

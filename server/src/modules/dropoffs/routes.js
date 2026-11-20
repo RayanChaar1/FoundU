@@ -5,13 +5,15 @@ const { requireAuth, requireRole } = require('../../middleware/auth');
 
 const router = express.Router();
 const id = z.coerce.number().int().positive();
+/** A required choice (category, building): the same message whether the field is empty or missing (FR-2.5). */
+const choice = (message) => z.preprocess((v) => (v === '' ? undefined : v), z.coerce.number({ error: message }).int(message).positive(message));
 const text = (max, message) => z.string({ error: message }).trim().min(1, message).max(max, `At most ${max} characters.`);
 const hhmm = (message) => z.string({ error: message }).regex(/^([01]\d|2[0-3]):[0-5]\d$/, message);
 
 /** FR-14.2: every attribute is required, and the point closes after it opens. */
 const pointSchema = z.object({
   name: text(80, 'Enter the name of the point.'),
-  locationId: id.or(z.literal('').transform(() => undefined)).refine(Boolean, 'Choose a building.'),
+  locationId: choice('Choose a building.'),
   opensAt: hhmm('Enter the opening time.'),
   closesAt: hhmm('Enter the closing time.'),
   contactNumber: text(40, 'Enter a contact number.').regex(/^[0-9+()\-. a-z]+$/i, 'Enter a valid contact number.'),
@@ -20,8 +22,8 @@ const pointSchema = z.object({
 /** FR-14.4: the found post of a visitor's item (whereabouts and point are set by the server). */
 const visitorSchema = z.object({
   title: text(80, 'Enter a title.'),
-  categoryId: id.or(z.literal('').transform(() => undefined)).refine(Boolean, 'Choose a category.'),
-  locationId: id.or(z.literal('').transform(() => undefined)).refine(Boolean, 'Choose a building.'),
+  categoryId: choice('Choose a category.'),
+  locationId: choice('Choose a building.'),
   description: z.string().trim().max(1000, 'At most 1,000 characters.').default(''),
   date: z.string({ error: 'Enter the date.' }).regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter the date.'),
   time: z.string().regex(/^\d{2}:\d{2}$/, 'Enter a valid time.').optional().or(z.literal('').transform(() => undefined)),

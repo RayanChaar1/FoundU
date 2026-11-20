@@ -1,0 +1,8 @@
+.privacy-page, .join-page > .card.privacy-page { max-width: 980px; }
+.privacy-page h1 { margin-top: 0.25rem; }
+.privacy-table { overflow-x: auto; }
+.privacy-table table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+.privacy-table th, .privacy-table td { text-align: left; vertical-align: top; padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--line, #e3e6ef); }
+.privacy-table thead th { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--muted, #5b6478); }
+.privacy-table tbody th { white-space: nowrap; }
+@media (max-width: 600px) { .privacy-table tbody th { white-space: normal; } }

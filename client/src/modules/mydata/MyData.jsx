@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { api } from '../../api';
 import { useAuth } from '../../auth';
 import Field from '../../components/Field';
@@ -70,7 +70,7 @@ export default function MyData() {
         <div className="activity-side">
           <section className="card panel">
             <h2 className="section-title">Download your data</h2>
-            <p>One file (JSON) with everything FoundU holds about you:</p>
+            <p>One file (JSON) with everything FoundU holds about you (<Link to="/privacy">why we keep each item</Link>):</p>
             <ul className="mydata-list">
               <li>your profile and preferences;</li>
               <li>your posts, with their changes and verification answers;</li>
