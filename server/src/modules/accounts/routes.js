@@ -3,7 +3,7 @@ const { z } = require('zod');
 const jwt = require('jsonwebtoken');
 const config = require('../../config');
 const service = require('./service');
-const { startSession, endSession, requireAuth } = require('../../middleware/auth');
+const { startSession, signOut, requireAuth } = require('../../middleware/auth');
 
 const router = express.Router();
 const PENDING_COOKIE = 'foundu_pending';
@@ -63,7 +63,7 @@ router.get('/auth/sso/callback', async (req, res) => {
   try {
     const result = await service.finishSso(flow?.state ? flow : null, { code: pick('code'), state: pick('state'), error: pick('error') });
     if (result.user) {
-      startSession(res, result.user.user_id);
+      startSession(res, result.user);
       return toClient(res, '/');
     }
     res.cookie(PENDING_COOKIE, result.pendingToken, { httpOnly: true, sameSite: 'lax', maxAge: 15 * 60 * 1000 });
@@ -83,7 +83,7 @@ router.post('/auth/verify', async (req, res) => {
   const body = z.object({ email, code: z.string().regex(/^\d{6}$/, 'Enter the 6-digit code.') }).parse(req.body);
   const result = await service.verifyCode(body.email, body.code);
   if (result.user) {
-    startSession(res, result.user.user_id);
+    startSession(res, result.user);
     return res.json({ signedIn: true });
   }
   res.cookie(PENDING_COOKIE, result.pendingToken, { httpOnly: true, sameSite: 'lax', maxAge: 15 * 60 * 1000 });
@@ -99,12 +99,12 @@ router.post('/auth/profile', async (req, res) => {
     .parse(req.body);
   const user = await service.completeProfile(req.cookies[PENDING_COOKIE], body);
   res.clearCookie(PENDING_COOKIE);
-  startSession(res, user.user_id);
+  startSession(res, user);
   res.status(201).json({ signedIn: true });
 });
 
-router.post('/auth/logout', (req, res) => {
-  endSession(res); // FR-1.8
+router.post('/auth/logout', async (req, res) => {
+  await signOut(req, res); // FR-1.8
   res.json({ signedOut: true });
 });
 
