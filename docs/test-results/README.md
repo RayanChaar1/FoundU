@@ -10,8 +10,8 @@ keeps the member who designed the case in Phase III.
 | Jean-Marie Agha | [jean-marie-agha.xlsx](jean-marie-agha.xlsx) | 74 | 68 | 0 | 0 | 6 |
 | Ramez Naba | [ramez-naba.xlsx](ramez-naba.xlsx) | 74 | 71 | 0 | 2 | 1 |
 | Adam Jaat | [adam-jaat.xlsx](adam-jaat.xlsx) | 74 | 56 | 0 | 18 | 0 |
-| Mohamad Moubarak | [mohamad-moubarak.xlsx](mohamad-moubarak.xlsx) | 74 | 61 | 3 | 5 | 5 |
-| **All** | | **420** | **379** | **3** | **26** | **12** |
+| Mohamad Moubarak | [mohamad-moubarak.xlsx](mohamad-moubarak.xlsx) | 74 | 64 | 3 | 5 | 2 |
+| **All** | | **420** | **382** | **3** | **26** | **9** |
 
 ## How the cases were run
 
@@ -34,7 +34,7 @@ passed when run again keep their first failure in **Notes**.
 | TC-NFR-22.1-V | No privacy notice; notifications were never deleted after 6 months | #52, merged; passed when run again |
 | TC-NFR-18.3-V | Five merged pull requests (#21, #22, #38, #39, #41) named no task | Descriptions linked to their work packages on 20 November; passed when run again |
 | TC-NFR-18.1-V, TC-NFR-18.1-D | The plan has phases and milestones, not two-week sprints with review records | Process: none |
-| TC-NFR-18.2-V | No merged pull request was approved by another member (required approvals set to 0) | Process: approvals back to 1 |
+| TC-NFR-18.2-V | No merged pull request was approved by another member (required approvals set to 0) | Required approvals set back to 1 on 20 November, for the pull requests that follow |
 
 TC-NFR-21.2-D passed for signed-in users on its first run, but a new sign-in during the mail outage got a
 generic error; fixed in #53 (merged), it now gets a clear 503 message.  The scale results of NFR-14 are in [security-performance.md](../security-performance.md).
@@ -44,6 +44,5 @@ generic error; fixed in #53 (merged), it now gets a clear 503 message.  The scal
 - **Not run (26):** the production setup of Appendix A (hosting, firewall, backups, monitoring), browsers the
   laptop does not have (NFR-8.1), and the review of the rules of use with LAU (NFR-23.1-V).  Each keeps its
   reason in **Notes**.
-- **To execute (12):** the usability test with participants (NFR-6.1 to 6.3), the VoiceOver part of NFR-7-V,
-  the release (NFR-21.1), the review of the AI credit in the report (NFR-24.1-V), and the cases that need the
-  required approvals back at 1 (NFR-18.2-D, NFR-24.1-D).
+- **To execute (9):** the usability test with participants (NFR-6.1 to 6.3), the VoiceOver part of NFR-7-V,
+  and the release (NFR-21.1).
