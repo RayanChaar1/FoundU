@@ -26,7 +26,7 @@ async function unique(fn, message) {
 
 const USER = `
   SELECT u.user_id AS id, u.full_name AS "fullName", u.display_name AS "displayName", u.email, u.role, u.status,
-         c.name AS campus, u.karma_points AS karma, u.created_at AS "createdAt"
+         u.flagged_for_review AS flagged, c.name AS campus, u.karma_points AS karma, u.created_at AS "createdAt"
     FROM users u LEFT JOIN campuses c ON c.campus_id = u.campus_id
    WHERE u.organization_id = $1 AND u.status <> 'DELETED'`;
 

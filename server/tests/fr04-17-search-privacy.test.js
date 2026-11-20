@@ -71,6 +71,12 @@ describe('TS-FR-4 Search and Browsing', () => {
     expect((await lea.get(`/api/posts?campusId=${R.byblos}&locationId=${R.nicol}`)).body.items).toEqual([]);
   });
 
+  test('TC-FR-4.4-D: a date range that ends before it starts is refused', async () => {
+    const res = await lea.get('/api/posts?from=2026-10-07&to=2026-10-01').expect(400);
+    expect(res.body.fields).toEqual({ to: 'The end date is before the start date.' });
+    await lea.get('/api/posts?from=2026-10-01&to=2026-10-01').expect(200); // one day is a valid range
+  });
+
   test('TC-FR-4.7-V / TC-FR-4.8-V: detail page with public information', async () => {
     const res = await lea.get(`/api/posts/${ids.wallet}`).expect(200);
     // Omar's badges depend on the returns of the other test files, so they are compared with the database

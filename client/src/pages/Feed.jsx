@@ -22,7 +22,11 @@ export default function Feed() {
     setError(null);
     api.get(`/posts${query(Object.fromEntries(params))}`)
       .then((d) => live && setData(d))
-      .catch((e) => live && setError(e.message));
+      .catch((e) => {
+        if (!live) return;
+        setData(null);
+        setError(Object.values(e.fields || {})[0] || e.message); // e.g. a date range that ends before it starts
+      });
     return () => { live = false; };
   }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -41,7 +45,7 @@ export default function Feed() {
       <div className="page-head">
         <div>
           <h1>Lost and found</h1>
-          <p>{data ? `${data.total} ${filters.status ? filters.status.toLowerCase() : 'open'} post${data.total === 1 ? '' : 's'}` : 'Loading…'}</p>
+          <p>{data ? `${data.total} ${filters.status ? filters.status.toLowerCase() : 'open'} post${data.total === 1 ? '' : 's'}` : error ? 'No posts shown' : 'Loading…'}</p>
         </div>
         <Link to="/posts/new" className="btn">+ Post an item</Link>
       </div>

@@ -277,6 +277,9 @@ describe('TS-FR-6 Claims and Ownership Verification', () => {
       await pastRejections(19, 10); // days 1, 10 and 20
       await rejectNow();
       expect(await flagged()).toBe(true);
+      const maya = await signIn('maya.azar@lau.edu'); // the administrator sees the flag in Admin › Users
+      const users = (await maya.get('/api/users?q=lea.n').expect(200)).body.users;
+      expect(users).toEqual([expect.objectContaining({ email: 'lea.n@lau.edu', flagged: true })]);
     });
   });
 });

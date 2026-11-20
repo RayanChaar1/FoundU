@@ -22,7 +22,7 @@ const searchSchema = z.object({
   from: day,
   to: day,
   page: z.coerce.number().int().min(1).max(1000).default(1),
-});
+}).refine((f) => !f.from || !f.to || f.to >= f.from, { path: ['to'], message: 'The end date is before the start date.' }); // FR-4.4
 
 router.get('/posts', requireAuth, async (req, res) => {
   const filters = searchSchema.parse(req.query);
