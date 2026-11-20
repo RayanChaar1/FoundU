@@ -27,7 +27,12 @@ async function findUserByEmail(email) {
 }
 
 async function insertOtp(email, codeHash, expiresAt) {
-  await query('INSERT INTO otp_codes (email, code_hash, expires_at) VALUES ($1, $2, $3)', [email, codeHash, expiresAt]);
+  const { rows } = await query('INSERT INTO otp_codes (email, code_hash, expires_at) VALUES ($1, $2, $3) RETURNING otp_id', [email, codeHash, expiresAt]);
+  return rows[0].otp_id;
+}
+
+async function deleteOtp(otpId) {
+  await query('DELETE FROM otp_codes WHERE otp_id = $1', [otpId]);
 }
 
 async function latestOtp(email) {
@@ -80,6 +85,7 @@ module.exports = {
   ssoOrganization,
   findUserByEmail,
   insertOtp,
+  deleteOtp,
   latestOtp,
   countRecentOtps,
   markOtpUsed,
