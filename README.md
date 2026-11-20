@@ -145,6 +145,7 @@ Modules are discovered automatically, so a new module only adds files and never 
 - **Client:** `client/src/modules/<name>/index.jsx` exports its routes, nav links, top-bar items and panels for the post and claim pages (see `client/src/modules/registry.js`).  Keep the module's styles in its own CSS file imported by `index.jsx`.
 - **Database:** add a migration with the module's number range, for example `010_messaging.sql`; migrations run once each, in any order.
 - **Tests:** add `server/tests/frNN-<name>.test.js` with tests named after the Phase III test cases.
+- **Documentation:** add `server/src/modules/<name>/README.md` with the sections Purpose, Interface and Dependencies (NFR-15.3); `npm test` fails without it.
 
 ## How we work
 
