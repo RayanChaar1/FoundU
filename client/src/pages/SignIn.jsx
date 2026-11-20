@@ -108,6 +108,7 @@ export default function SignIn() {
               <p className="hint" style={{ marginTop: '1rem', textAlign: 'center' }}>
                 Is your organization not on FoundU yet?  <Link to="/join">Request access</Link>
               </p>
+              <p className="hint" style={{ textAlign: 'center' }}><Link to="/privacy">Privacy and rules of use</Link></p>
             </form>
           )}
 

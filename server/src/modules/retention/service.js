@@ -69,4 +69,15 @@ async function purgeAuditLog(now = new Date()) {
   return rowCount;
 }
 
-module.exports = { anonymizeExpired, anonymizePost, purgeAuditLog, REMOVED, AUDIT_MONTHS };
+const NOTIFICATION_MONTHS = 6; // Table 58
+
+/** Table 58, NFR-22.1: notifications are kept for six months, and sign-in codes one day after they expire.
+    Returns the number of rows deleted of each. */
+async function purgeShortLived(now = new Date()) {
+  const n = await query(
+    `DELETE FROM notifications WHERE created_at < $1::timestamptz - make_interval(months => $2)`, [now, NOTIFICATION_MONTHS]);
+  const c = await query(`DELETE FROM otp_codes WHERE expires_at < $1::timestamptz - interval '1 day'`, [now]);
+  return { notifications: n.rowCount, codes: c.rowCount };
+}
+
+module.exports = { anonymizeExpired, anonymizePost, purgeAuditLog, purgeShortLived, REMOVED, AUDIT_MONTHS, NOTIFICATION_MONTHS };

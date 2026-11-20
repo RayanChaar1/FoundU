@@ -26,6 +26,7 @@ const PUBLIC = [
   'get /auth/sso/start', 'get /auth/sso/callback', 'get /auth/pending', // FR-1.2: before any session exists
   'post /organizations/requests', 'get /tags/:token', 'post /tags/:token/messages',
   'delete /posts/:id/history', 'patch /posts/:id/history', 'put /posts/:id/history',
+  'get /privacy', // NFR-22.1: the privacy notice and rules of use, read before signing in
 ];
 
 /** Every API route: method, path and whether it needs a session or a role. */
