@@ -83,6 +83,7 @@ Choose **Disconnect** on the same panel to go back to sign-in codes.
 | `npm run db:migrate` | Apply new migrations from `server/src/db/migrations/` |
 | `npm run db:seed` | Replace all data with the demo organizations, users and categories |
 | `npm run db:reset` | Drop every table, migrate again and seed |
+| `npm run db:demo` | After `db:reset`, add the presentation data: posts on both campuses, a finished return, a QR tag and a report (photos from `server/demo/photos/`) |
 | `npm run idp --workspace server` | Start the development identity provider for single sign-on (port 4001) |
 
 ## Security and performance
