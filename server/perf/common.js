@@ -6,11 +6,11 @@ const BASE = process.env.BASE || 'http://localhost:4100';
 async function sessions() {
   const db = new Client({ connectionString: config.databaseUrl });
   await db.connect();
-  const { rows } = await db.query(`SELECT user_id FROM users WHERE email LIKE 'perf%@lau.edu' ORDER BY user_id`);
+  const { rows } = await db.query(`SELECT user_id, session_epoch FROM users WHERE email LIKE 'perf%@lau.edu' ORDER BY user_id`);
   const meta = (await db.query(`SELECT c.campus_id FROM campuses c JOIN organizations o USING (organization_id) WHERE o.name = 'Lebanese American University' AND c.name = 'Beirut'`)).rows[0];
   const posts = (await db.query(`SELECT p.post_id FROM posts p JOIN locations l USING (location_id) WHERE p.status = 'OPEN' AND l.campus_id = $1`, [meta.campus_id])).rows.map((r) => r.post_id);
   await db.end();
-  const cookies = rows.map((r) => `foundu_session=${jwt.sign({ sub: r.user_id }, config.jwtSecret, { expiresIn: '2h' })}`);
+  const cookies = rows.map((r) => `foundu_session=${jwt.sign({ sub: r.user_id, v: r.session_epoch }, config.jwtSecret, { expiresIn: '2h' })}`);
   return { cookies, beirut: meta.campus_id, posts };
 }
 async function timed(path, cookie) {

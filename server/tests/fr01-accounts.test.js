@@ -72,6 +72,16 @@ describe('TS-FR-1', () => {
     await agent.get('/api/auth/me').expect(401);
   });
 
+  test('TC-FR-1.8-D: a copy of the session cookie is refused after sign-out', async () => {
+    const agent = await signIn('sara.k@lau.edu');
+    const me = await agent.get('/api/auth/me').expect(200);
+    const copy = me.headers['set-cookie'].find((c) => c.startsWith('foundu_session=')).split(';')[0];
+    await agent.post('/api/auth/logout').expect(200);
+    await request(app).get('/api/auth/me').set('Cookie', copy).expect(401);
+    const again = await signIn('sara.k@lau.edu'); // signing in again works
+    await again.get('/api/auth/me').expect(200);
+  });
+
   test('TC-FR-1.9-D: tampered session token refused', async () => {
     await request(app).get('/api/auth/me').set('Cookie', 'foundu_session=invalidtoken').expect(401);
   });

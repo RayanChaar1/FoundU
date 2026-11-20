@@ -10,6 +10,9 @@ const { app, request, lastCode, signIn } = require('./helpers');
 const { pool, query } = require('../src/db/pool');
 const { ref, jpeg, today } = require('./fixtures');
 
+// A valid session token signed here carries the user's current session epoch (FR-1.8), as the server's do
+const epoch = async (id) => (await query('SELECT session_epoch FROM users WHERE user_id = $1', [id])).rows[0].session_epoch;
+
 const EMAILS = {
   sara: 'sara.k@lau.edu', omar: 'omar.h@lau.edu', lea: 'lea.n@lau.edu', karim: 'k.saad@lau.edu',
   maya: 'maya.azar@lau.edu', john: 'john@acme.com', pa: 'pa@foundu.app',
@@ -160,7 +163,7 @@ describe('NFR-12.1 every action is authorized on the server', () => {
       await request(app).get('/api/auth/me').set('Cookie', `foundu_session=${token}`).expect(401);
     }
     // Even a correctly signed token cannot raise a role: the role is read from the database on every request
-    const signed = jwt.sign({ sub: uid.sara, role: 'ORG_ADMIN' }, config.jwtSecret, { expiresIn: '30m' });
+    const signed = jwt.sign({ sub: uid.sara, v: await epoch(uid.sara), role: 'ORG_ADMIN' }, config.jwtSecret, { expiresIn: '30m' });
     const adminRoute = ROUTES.find((r) => r.role === 'admin' && r.method === 'get' && !r.path.includes(':'));
     await request(app).get(`/api${adminRoute.path}`).set('Cookie', `foundu_session=${signed}`).expect(403);
   });
@@ -275,7 +278,8 @@ describe('NFR-11 attacks', () => {
     config.rateLimitPerMinute = 100;
     const limited = createApp();
     config.rateLimitPerMinute = before;
-    const cookie = (name) => `foundu_session=${jwt.sign({ sub: uid[name] }, config.jwtSecret, { expiresIn: '30m' })}`;
+    const v = { sara: await epoch(uid.sara), lea: await epoch(uid.lea), omar: await epoch(uid.omar) };
+    const cookie = (name) => `foundu_session=${jwt.sign({ sub: uid[name], v: v[name] }, config.jwtSecret, { expiresIn: '30m' })}`;
     const statuses = [];
     for (let i = 0; i < 100; i += 10) {
       const batch = await Promise.all(Array.from({ length: 10 }, () => request(limited).get('/api/posts').set('Cookie', cookie('sara'))));
@@ -345,7 +349,7 @@ describe('NFR-1 overload', () => {
     config.maxInFlight = 2;
     const busy = createApp();
     config.maxInFlight = before;
-    const cookie = `foundu_session=${jwt.sign({ sub: uid.lea }, config.jwtSecret, { expiresIn: '30m' })}`;
+    const cookie = `foundu_session=${jwt.sign({ sub: uid.lea, v: await epoch(uid.lea) }, config.jwtSecret, { expiresIn: '30m' })}`;
     const server = busy.listen(0);
     const at = `http://127.0.0.1:${server.address().port}/api/posts`;
     try {
