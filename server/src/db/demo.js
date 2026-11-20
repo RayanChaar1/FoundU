@@ -14,6 +14,7 @@ const claims = require('../modules/claims/service');
 const messaging = require('../modules/messaging/service');
 const tags = require('../modules/tags/service');
 const moderation = require('../modules/moderation/service');
+const dropoffs = require('../modules/dropoffs/service');
 
 const PHOTOS = path.join(__dirname, '../../demo/photos');
 const TYPES = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.heic': 'image/heic' };
@@ -105,6 +106,11 @@ const daysAgo = (n, hour = 10, minute = 0) => {
     whereabouts: 'DROPOFF', dropoffId: await desk('Security Office, Nicol Hall'), verificationQuestion: 'What sticker is on the charger?',
     verificationAnswer: 'A cat' }, photo('charger'));
   await backdate(wallet, daysAgo(2, 16)); await backdate(charger, daysAgo(3, 18));
+  // Karim records them at the desk (the finders earn their drop-off karma); an hour after each post
+  const nicol = await desk('Security Office, Nicol Hall');
+  for (const item of [card, wallet, charger]) await dropoffs.receive(karim, nicol, item.post_id);
+  await query(`UPDATE posts SET received_at = created_at + interval '1 hour' WHERE post_id = ANY($1)`,
+    [[card.post_id, wallet.post_id, charger.post_id]]);
 
   // 5. Open posts on both campuses for the feed, the search and the map (FR-4, FR-11)
   const more = [
