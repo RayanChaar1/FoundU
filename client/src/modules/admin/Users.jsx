@@ -47,7 +47,8 @@ export default function Users() {
                     <div className="hint">{u.email}</div>
                   </td>
                   <td>{ROLE_LABEL[u.role]}</td>
-                  <td><span className={`badge ${u.status === 'SUSPENDED' ? 'sensitive' : 'status'}`}>{u.status === 'SUSPENDED' ? 'Suspended' : 'Active'}</span></td>
+                  <td><span className={`badge ${u.status === 'SUSPENDED' ? 'sensitive' : 'status'}`}>{u.status === 'SUSPENDED' ? 'Suspended' : 'Active'}</span>
+                    {u.flagged && <> <span className="badge sensitive" title="Three claims rejected within 30 days (FR-6.14)">Flagged for review</span></>}</td>
                 </tr>
               ))}
             </tbody>
@@ -97,7 +98,7 @@ function UserDetail({ id, onChanged }) {
         <dt>Campus</dt><dd>{u.campus || '—'}</dd>
         <dt>Karma</dt><dd>{u.karma} points</dd>
         <dt>Member since</dt><dd>{formatDate(u.createdAt)}</dd>
-        <dt>Status</dt><dd>{u.status === 'SUSPENDED' ? 'Suspended' : 'Active'}</dd>
+        <dt>Status</dt><dd>{u.status === 'SUSPENDED' ? 'Suspended' : 'Active'}{u.flagged && ' · Flagged for review (three claims rejected within 30 days)'}</dd>
       </dl>
       <Notice notice={notice} />
 
