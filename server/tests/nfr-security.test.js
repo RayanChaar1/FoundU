@@ -312,6 +312,13 @@ describe('NFR-11 attacks', () => {
     expect((await query('SELECT count(*)::int AS n FROM posts')).rows[0].n).toBeGreaterThan(0);
   });
 
+  test('TC-NFR-11.1-D: text with a NUL character is refused with a message, not a server error', async () => {
+    const res = await as.lea.get('/api/posts').query({ q: 'wallet\u0000' }).expect(400);
+    expect(res.body.error).toBe('Text cannot contain a null character.');
+    const tag = await request(app).get('/api/tags/abc%00def');
+    expect(tag.status).toBeLessThan(500);
+  });
+
   test('TC-NFR-11.1-D: security headers are sent and requests over 100 kB are refused', async () => {
     const res = await request(app).get('/api/health').expect(200);
     expect(res.headers['content-security-policy']).toMatch(/default-src 'self'/);

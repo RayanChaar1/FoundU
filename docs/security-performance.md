@@ -1,6 +1,6 @@
 # Security and performance checks (issue #13)
 
-**Date:** 18 November 2026.  **Version checked:** main with every module merged (FR-1 to FR-18, QR tags and the usability fixes), 104 API routes.  **Automated tests:** `server/tests/nfr-security.test.js` (17 tests, named after the Phase III test cases), run with the rest of the suite by `npm test`.  **Performance scripts:** `server/perf/` (see the README).
+**Date:** 18 November 2026.  **Version checked:** main with every module merged (FR-1 to FR-18, QR tags and the usability fixes), 104 API routes.  **Automated tests:** `server/tests/nfr-security.test.js` (18 tests, named after the Phase III test cases), run with the rest of the suite by `npm test`.  **Performance scripts:** `server/perf/` (see the README).
 
 ## Results
 
@@ -10,7 +10,7 @@
 | NFR-10.1 Verification answers encrypted | Test reads the database column | AES-256-GCM: no clear text in the column, a new random IV each time (two equal answers give different values), decrypts to the answer | Pass |
 | NFR-10.2 Codes stored as salted hashes | Test reads the database columns | Sign-in and handover codes stored as argon2id hashes with their own salt; the code never appears in the hash | Pass, with finding 1 |
 | NFR-10.3 Encryption at rest | Storage settings | The laptop disk is encrypted by FileVault (XTS-AES-128 with a 256-bit key), which covers the database and the photos.  On a server, the database and photo storage of the hosting provider are encrypted with AES-256 | Pass for the demo |
-| NFR-11.1 No critical or high OWASP Top 10 vulnerability | `npm audit`, the OWASP Top 10 review below, automated tests | `npm audit --omit=dev`: 0 vulnerabilities in what runs in production.  SQL injection and script text stored and returned as plain text.  Security headers and cookie flags tested | Pass, with findings 4 and 5 |
+| NFR-11.1 No critical or high OWASP Top 10 vulnerability | `npm audit`, OWASP ZAP 2.17.0 (20 November, below), the OWASP Top 10 review below, automated tests | `npm audit --omit=dev`: 0 vulnerabilities in what runs in production.  ZAP: no confirmed high or medium finding (one high alert verified as a false positive, finding 8).  SQL injection and script text stored and returned as plain text.  Security headers and cookie flags tested | Pass, with findings 4, 5, 7 to 9 |
 | NFR-11.2 100 requests per minute per user | Test on a copy of the app with the real limit | 100 requests in a minute answered; the 101st gets 429 "Too many requests.  Try again in a minute."; another user is not affected | Pass |
 | NFR-12.1 Every action authorized on the server | Test reads every route from the application | The 96 routes that need a session answer 401 without one; each of the 43 staff, administrator and platform routes answers 403 to every role it does not allow (128 calls); every page-level read answers 200 to a role it allows; forged, unsigned and tampered tokens get 401, and a role written into a valid token is ignored (403) | Pass |
 | NFR-12.2 No data across organizations | Test as John (Acme) on LAU records | 14 kinds of LAU records (post, photo, claims, matches, history, contacts, conversation, profile, map…) answer 404 to John, reading and writing; a forged `organizationId` is ignored; a LAU category cannot be used from Acme; Sara (LAU) reads the same records | Pass |
@@ -32,6 +32,18 @@
 | 4 | **Testing an organization's single sign-on makes the server open the address the administrator typed** (FR-18.8).  An administrator could point it at an internal service. | Low | Only the administrator of an organization verified by the platform administrator can do it, HTTPS only in production, and the server never shows what it received.  Before a real deployment, refuse addresses that resolve to private networks. |
 | 5 | **41 alerts in development tools** (Jest and Vite: picomatch and similar). | Low | None reaches production (`npm audit --omit=dev` finds 0).  Their fixes need major versions of Jest and Vite; to update after the submission. |
 | 6 | **No answer to overload** (TC-NFR-1-D): past its capacity the server would have queued requests until they timed out. | Medium | Fixed: beyond 500 requests in progress at once (`MAX_IN_FLIGHT`), extra requests get 503 "FoundU is very busy.  Try again in a few seconds." with `Retry-After` at once. |
+| 7 | **Text with a NUL character gave a server error** (found by the ZAP scan): PostgreSQL refuses `\u0000`, so a search or message containing it answered 500 "Something went wrong" (no internal details were shown). | Low | Fixed: the error handler answers 400 "Text cannot contain a null character."; test TC-NFR-11.1-D. |
+| 8 | **ZAP reported a SQL injection in the search** (`q`, high risk, medium confidence) because `wallet%` returned the same post as `wallet` while `walletXYZABCDEFGHIJ` returned none. | None (false positive) | Verified by hand: the query is a parameter (`$n`); full-text search (`websearch_to_tsquery`) ignores punctuation, so `wallet%` is the word `wallet`, and the `ILIKE` part escapes `%`.  `wallet' OR '1'='1` returns the one wallet, not the 11 posts, and `%` alone returns nothing. |
+| 9 | **Script text is returned as written in JSON** (ZAP: "Cross Site Scripting Weakness, persistent in JSON response", low): a `<script>` contact message comes back unchanged in My data. | Low | Kept: FoundU stores what users type and React escapes it when shown; JSON is served as `application/json` with `nosniff`, so a browser never runs it. |
+
+## OWASP ZAP scan (20 November 2026)
+
+OWASP ZAP 2.17.0 (cross-platform package, checksum checked) scanned the API of `main` with the fix of finding 7, through its Automation Framework, on a separate instance with its own database (demonstration data) so that the attacks never touched the demo.  The rate limit of that instance was raised so that the scan was not cut off at 100 requests a minute; NFR-11.2 is tested on its own.
+
+- **Scope:** every GET route of the API (45, with identifiers of the demonstration data), the search with all its filters, and four JSON requests with a body (claim, contact, report, sign-in code), sent as the organization administrator, plus the routes that need no session.  Sign-out, account deletion, suspension and role changes were left out so that the scan could not end its own session.
+- **Scan:** passive scan of every response, then the active scan at strength High and threshold Low (SQL injection, cross-site scripting, path traversal, command injection, server-side include and the other default rules).
+- **Result:** 1 high alert, verified as a false positive (finding 8); 1 low (finding 9); 2 informational (the session cookie seen on responses; the user-agent fuzzer found no difference).  No medium alert.  A first scan at the default strength found no high or medium alert, and the NUL-character error of finding 7 in the server log.
+- **Reports:** [zap/zap-2026-11-20.html](zap/zap-2026-11-20.html) and [zap/zap-2026-11-20.json](zap/zap-2026-11-20.json), kept with the release (post-condition of TC-NFR-11.1-V).
 
 ## OWASP Top 10 (2021) review
 
