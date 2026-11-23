@@ -54,14 +54,24 @@ export default function ClaimPanel({ post }) {
       </div>
     );
   }
+  // FR-6.3: the poster cannot claim their own post; say why and what to do instead (TC-NFR-6.2-D)
   if (post.type === 'FOUND' && post.isOwner) {
-    return <div className="subpanel"><p className="hint">No claims yet.  You will be notified when someone claims this item.</p></div>;
+    return (
+      <div className="subpanel">
+        <div className="alert info" role="status">
+          You posted this item, so you cannot claim it.  When someone claims it, you are notified and review the claim
+          here.  If it has already gone back to its owner, choose <strong>Close post</strong>.
+        </div>
+        <p className="hint">No claims yet.</p>
+      </div>
+    );
   }
 
   if (post.type === 'LOST' && post.isOwner) {
     return (
       <div className="subpanel">
         <h2 className="section-title" style={{ marginTop: 0 }}>"I may have found this" messages</h2>
+        <p className="hint">You posted this item.  Anyone who may have found it writes to you here, and you are notified.</p>
         {contacts.length === 0 ? <p className="hint">No messages yet.</p> : (
           <ul className="claim-list">
             {contacts.map((c) => (
