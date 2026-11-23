@@ -1,17 +1,17 @@
 # Test execution results (Phase IV, issue #16)
 
-The 420 Phase III test cases, in one sheet per designer.  Rayan El Chaar executed every case on 20 November 2026
-on his laptop, and signed each executed row (**Executed by**, **Execution date**).  The **Designed by** column
+The 420 Phase III test cases, in one sheet per designer.  Rayan El Chaar executed the cases from 20 to 23 November
+2026 on his laptop, and signed each executed row (**Executed by**, **Execution date**).  The **Designed by** column
 keeps the member who designed the case in Phase III.
 
 | Designer | File | Cases | Pass | Fail | Not run | To execute |
 | --- | --- | --- | --- | --- | --- | --- |
 | Rayan El Chaar | [rayan-el-chaar.xlsx](rayan-el-chaar.xlsx) | 124 | 123 | 0 | 1 | 0 |
 | Jean-Marie Agha | [jean-marie-agha.xlsx](jean-marie-agha.xlsx) | 74 | 68 | 0 | 0 | 6 |
-| Ramez Naba | [ramez-naba.xlsx](ramez-naba.xlsx) | 74 | 71 | 0 | 2 | 1 |
+| Ramez Naba | [ramez-naba.xlsx](ramez-naba.xlsx) | 74 | 72 | 0 | 2 | 0 |
 | Adam Jaat | [adam-jaat.xlsx](adam-jaat.xlsx) | 74 | 56 | 0 | 18 | 0 |
 | Mohamad Moubarak | [mohamad-moubarak.xlsx](mohamad-moubarak.xlsx) | 74 | 64 | 3 | 5 | 2 |
-| **All** | | **420** | **382** | **3** | **26** | **9** |
+| **All** | | **420** | **383** | **3** | **26** | **8** |
 
 ## How the cases were run
 
@@ -34,7 +34,7 @@ passed when run again keep their first failure in **Notes**.
 | TC-NFR-22.1-V | No privacy notice; notifications were never deleted after 6 months | #52, merged; passed when run again |
 | TC-NFR-18.3-V | Five merged pull requests (#21, #22, #38, #39, #41) named no task | Descriptions linked to their work packages on 20 November; passed when run again |
 | TC-NFR-18.1-V, TC-NFR-18.1-D | The plan has phases and milestones, not two-week sprints with review records | Process: none |
-| TC-NFR-18.2-V | No merged pull request was approved by another member (required approvals set to 0) | Required approvals set back to 1 on 20 November, for the pull requests that follow |
+| TC-NFR-18.2-V | No merged pull request was approved by another member (required approvals set to 0) | Required approvals set back to 1 on 20 November; #57 (23 November) was the first merged pull request approved by another member |
 
 TC-NFR-21.2-D passed for signed-in users on its first run, but a new sign-in during the mail outage got a
 generic error; fixed in #53 (merged), it now gets a clear 503 message.  The scale results of NFR-14 are in [security-performance.md](../security-performance.md).
@@ -44,5 +44,5 @@ generic error; fixed in #53 (merged), it now gets a clear 503 message.  The scal
 - **Not run (26):** the production setup of Appendix A (hosting, firewall, backups, monitoring), browsers the
   laptop does not have (NFR-8.1), and the review of the rules of use with LAU (NFR-23.1-V).  Each keeps its
   reason in **Notes**.
-- **To execute (9):** the usability test with participants (NFR-6.1 to 6.3), the VoiceOver part of NFR-7-V,
-  and the release (NFR-21.1).
+- **To execute (8):** the usability test with participants (NFR-6.1 to 6.3) and the release (NFR-21.1).
+  TC-NFR-7-V passed on 23 November: axe-core found no violation, and every page was used with VoiceOver.
