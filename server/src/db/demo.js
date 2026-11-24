@@ -63,8 +63,8 @@ const daysAgo = (n, hour = 10, minute = 0) => {
 
   // 1. A finished return: Lea lost her umbrella, Omar found it, they talked, and the handover was confirmed (FR-6, FR-7, FR-9, FR-13)
   const umbrellaLost = await lost(lea, { title: 'Grey folding umbrella', categoryId: await cat('Umbrella'), locationId: await at('Sage Hall', 'Beirut'),
-    description: 'Grey folding umbrella with a wooden handle, left on a bench outside room 301.', eventDatetime: daysAgo(6, 13) });
-  const umbrella = await found(omar, { title: 'Grey umbrella with a wooden handle', categoryId: await cat('Umbrella'),
+    description: 'Grey folding umbrella with a grey loop handle, left on a bench outside room 301.', eventDatetime: daysAgo(6, 13) });
+  const umbrella = await found(omar, { title: 'Grey folding umbrella with a loop handle', categoryId: await cat('Umbrella'),
     locationId: await at('Sage Hall', 'Beirut'), description: 'Found on the bench outside Sage 301 after the 2 pm class.',
     eventDatetime: daysAgo(6, 15), whereabouts: 'FINDER', verificationQuestion: 'What is written on the strap?', verificationAnswer: 'Paris' }, photo('umbrella'));
   await backdate(umbrellaLost, daysAgo(6, 13)); await backdate(umbrella, daysAgo(6, 15));
@@ -83,11 +83,11 @@ const daysAgo = (n, hour = 10, minute = 0) => {
     ['posts', 'returned_at'], ['posts', 'closed_at'], ['posts', 'updated_at']];
   for (const [table, col] of shifts) await query(`UPDATE ${table} SET ${col} = ${col} - interval '5 days' WHERE ${col} >= $1`, [t0]);
 
-  // 2. The live demonstration: Omar found AirPods; Sara will post her lost AirPods during the presentation (FR-5)
-  const airpods = await found(omar, { title: 'White AirPods Pro in a black case', categoryId: await cat('Electronics'),
+  // 2. The live demonstration: Omar found earbuds; Sara will post her lost earbuds during the presentation (FR-5)
+  const earbuds = await found(omar, { title: 'Wireless earbuds in a silver case', categoryId: await cat('Electronics'),
     locationId: await at('Riyad Nassar Library', 'Beirut'), description: 'Found on a desk on the second floor of the library, near the windows.',
-    eventDatetime: daysAgo(0, 9, 30), whereabouts: 'FINDER', verificationQuestion: 'What initials are engraved on the case?', verificationAnswer: 'SK' }, photo('airpods'));
-  await backdate(airpods, daysAgo(0, 9, 30));
+    eventDatetime: daysAgo(0, 9, 30), whereabouts: 'FINDER', verificationQuestion: 'What initials are engraved on the case?', verificationAnswer: 'SK' }, photo('earbuds'));
+  await backdate(earbuds, daysAgo(0, 9, 30));
 
   // 3. A sensitive item: its photo is blurred for everyone but the poster, staff and the approved claimant (FR-17)
   const card = await found(omar, { title: 'LAU student ID card', categoryId: await cat('ID card'), locationId: await at('Cafeteria', 'Beirut'),
@@ -97,14 +97,14 @@ const daysAgo = (n, hour = 10, minute = 0) => {
   await backdate(card, daysAgo(1, 12, 15));
 
   // 4. Items handed to the drop-off desks (FR-14)
-  const wallet = await found(lea, { title: 'Brown leather wallet', categoryId: await cat('Wallet'), locationId: await at('Irwin Hall', 'Beirut'),
-    description: 'Brown leather wallet with a few cards inside, found in the Irwin Hall auditorium.', eventDatetime: daysAgo(2, 16),
+  const wallet = await found(lea, { title: 'Black leather wallet', categoryId: await cat('Wallet'), locationId: await at('Irwin Hall', 'Beirut'),
+    description: 'Black leather wallet with a few cards inside, found in the Irwin Hall auditorium.', eventDatetime: daysAgo(2, 16),
     whereabouts: 'DROPOFF', dropoffId: await desk('Security Office, Nicol Hall'), verificationQuestion: 'Which bank card is inside?',
     verificationAnswer: 'Bank Audi' }, photo('wallet'));
-  const charger = await found(karim, { title: 'MacBook charger, 67 W', categoryId: await cat('Electronics'), locationId: await at('Adnan Kassar School of Business', 'Beirut'),
-    description: 'White USB-C MacBook charger left plugged in a classroom on the third floor.', eventDatetime: daysAgo(3, 18),
-    whereabouts: 'DROPOFF', dropoffId: await desk('Security Office, Nicol Hall'), verificationQuestion: 'What sticker is on the charger?',
-    verificationAnswer: 'A cat' }, photo('charger'));
+  const charger = await found(karim, { title: 'Phone charger with a USB-C cable', categoryId: await cat('Electronics'), locationId: await at('Adnan Kassar School of Business', 'Beirut'),
+    description: 'Black phone charger with its USB-C cable, left plugged in a classroom on the third floor.', eventDatetime: daysAgo(3, 18),
+    whereabouts: 'DROPOFF', dropoffId: await desk('Security Office, Nicol Hall'), verificationQuestion: 'What is written on the charger?',
+    verificationAnswer: 'Super Fast Charging' }, photo('charger'));
   await backdate(wallet, daysAgo(2, 16)); await backdate(charger, daysAgo(3, 18));
   // Karim records them at the desk (the finders earn their drop-off karma); an hour after each post
   const nicol = await desk('Security Office, Nicol Hall');
@@ -116,8 +116,8 @@ const daysAgo = (n, hour = 10, minute = 0) => {
   const more = [
     [lost, sara, { title: 'Blue Hydro Flask water bottle', categoryId: await cat('Water bottle'), locationId: await at('Gymnasium', 'Beirut'),
       description: 'Dark blue 32 oz bottle with stickers of Lebanon and a climbing club.', eventDatetime: daysAgo(1, 19) }, 'bottle', daysAgo(1, 19)],
-    [lost, lea, { title: 'Car keys with a red keychain', categoryId: await cat('Keys'), locationId: await at('Zakhem Hall', 'Byblos'),
-      description: 'Kia car key and two house keys on a red leather keychain.', eventDatetime: daysAgo(2, 8, 45) }, 'keys', daysAgo(2, 8, 45)],
+    [lost, lea, { title: 'Car key with a silver race-car keychain', categoryId: await cat('Keys'), locationId: await at('Zakhem Hall', 'Byblos'),
+      description: 'Black car key with a silver race-car keychain and a small house key.', eventDatetime: daysAgo(2, 8, 45) }, 'keys', daysAgo(2, 8, 45)],
     [found, omar, { title: 'Black backpack with a laptop sleeve', categoryId: await cat('Bag'), locationId: await at('Joseph G. Jabbra Library', 'Byblos'),
       description: 'Black backpack left near the printers; it holds notebooks and a calculator.', eventDatetime: daysAgo(4, 17),
       whereabouts: 'DROPOFF', dropoffId: await desk('Security Office, Bassil Hall'), verificationQuestion: 'Which calculator model is inside?',
