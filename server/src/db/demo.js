@@ -114,16 +114,16 @@ const daysAgo = (n, hour = 10, minute = 0) => {
 
   // 5. Open posts on both campuses for the feed, the search and the map (FR-4, FR-11)
   const more = [
-    [lost, sara, { title: 'Blue Hydro Flask water bottle', categoryId: await cat('Water bottle'), locationId: await at('Gymnasium', 'Beirut'),
-      description: 'Dark blue 32 oz bottle with stickers of Lebanon and a climbing club.', eventDatetime: daysAgo(1, 19) }, 'bottle', daysAgo(1, 19)],
+    [lost, sara, { title: 'White water bottle with a grey lid', categoryId: await cat('Water bottle'), locationId: await at('Gymnasium', 'Beirut'),
+      description: 'White insulated bottle with a grey flip lid and a clear cap.', eventDatetime: daysAgo(1, 19) }, 'bottle', daysAgo(1, 19)],
     [lost, lea, { title: 'Car key with a silver race-car keychain', categoryId: await cat('Keys'), locationId: await at('Zakhem Hall', 'Byblos'),
       description: 'Black car key with a silver race-car keychain and a small house key.', eventDatetime: daysAgo(2, 8, 45) }, 'keys', daysAgo(2, 8, 45)],
     [found, omar, { title: 'Black backpack with a laptop sleeve', categoryId: await cat('Bag'), locationId: await at('Joseph G. Jabbra Library', 'Byblos'),
       description: 'Black backpack left near the printers; it holds notebooks and a calculator.', eventDatetime: daysAgo(4, 17),
       whereabouts: 'DROPOFF', dropoffId: await desk('Security Office, Bassil Hall'), verificationQuestion: 'Which calculator model is inside?',
       verificationAnswer: 'Casio fx-991' }, 'backpack', daysAgo(4, 17)],
-    [found, sara, { title: 'Engineering notebook, green cover', categoryId: await cat('Books and notes'), locationId: await at('Shannon Hall', 'Beirut'),
-      description: 'Green spiral notebook with circuit analysis notes.', eventDatetime: daysAgo(5, 11), whereabouts: 'FINDER',
+    [found, sara, { title: 'University notebook, grey cover', categoryId: await cat('Books and notes'), locationId: await at('Shannon Hall', 'Beirut'),
+      description: 'Grey spiral notebook with circuit analysis notes.', eventDatetime: daysAgo(5, 11), whereabouts: 'FINDER',
       verificationQuestion: 'Which course name is on the first page?', verificationAnswer: 'ELE 301' }, 'notebook', daysAgo(5, 11)],
   ];
   for (const [fn, who, fields, pic, when] of more) await backdate(await fn(who, fields, photo(pic)), when);
