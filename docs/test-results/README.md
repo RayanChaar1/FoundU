@@ -1,6 +1,6 @@
 # Test execution results (Phase IV, issue #16)
 
-The 420 Phase III test cases, in one sheet per designer.  Rayan El Chaar executed the cases from 20 to 23 November
+The 420 Phase III test cases, in one sheet per designer.  Rayan El Chaar executed the cases from 20 to 24 November
 2026 on his laptop, and signed each executed row (**Executed by**, **Execution date**).  The **Designed by** column
 keeps the member who designed the case in Phase III.
 
@@ -10,8 +10,8 @@ keeps the member who designed the case in Phase III.
 | Jean-Marie Agha | [jean-marie-agha.xlsx](jean-marie-agha.xlsx) | 74 | 68 | 0 | 0 | 6 |
 | Ramez Naba | [ramez-naba.xlsx](ramez-naba.xlsx) | 74 | 72 | 0 | 2 | 0 |
 | Adam Jaat | [adam-jaat.xlsx](adam-jaat.xlsx) | 74 | 56 | 0 | 18 | 0 |
-| Mohamad Moubarak | [mohamad-moubarak.xlsx](mohamad-moubarak.xlsx) | 74 | 64 | 3 | 5 | 2 |
-| **All** | | **420** | **383** | **3** | **26** | **8** |
+| Mohamad Moubarak | [mohamad-moubarak.xlsx](mohamad-moubarak.xlsx) | 74 | 66 | 3 | 5 | 0 |
+| **All** | | **420** | **385** | **3** | **26** | **6** |
 
 ## How the cases were run
 
@@ -44,5 +44,7 @@ generic error; fixed in #53 (merged), it now gets a clear 503 message.  The scal
 - **Not run (26):** the production setup of Appendix A (hosting, firewall, backups, monitoring), browsers the
   laptop does not have (NFR-8.1), and the review of the rules of use with LAU (NFR-23.1-V).  Each keeps its
   reason in **Notes**.
-- **To execute (8):** the usability test with participants (NFR-6.1 to 6.3) and the release (NFR-21.1).
-  TC-NFR-7-V passed on 23 November: axe-core found no violation, and every page was used with VoiceOver.
+- **To execute (6):** the usability test with participants (NFR-6.1 to 6.3).
+- TC-NFR-7-V passed on 23 November: axe-core found no violation, and every page was used with VoiceOver.
+- TC-NFR-21.1-V and -D passed on 24 November: release [v1.0.0](https://github.com/RayanChaar1/FoundU/releases/tag/v1.0.0)
+  came 8 days before the deadline, and no High-priority case was failing when it was tagged.
