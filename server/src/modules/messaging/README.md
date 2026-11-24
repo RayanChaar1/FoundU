@@ -32,3 +32,10 @@ Events published (`src/lib/events.js`): `report.created`.
 
 - `routes.js`: HTTP routes and input validation (zod)
 - `service.js`: business rules
+
+
+## In the demo
+1. Once Omar approves Sara's claim, the two chat privately; neither sees the other's email address.
+2. Send one message from each window and show the notification arriving on the bell.
+3. At the meeting, Omar types the 4-digit code Sara shows him: his found post becomes Returned, with the date in its history, and he receives karma points.
+4. Open Omar's profile for the points and the First Find badge, then the found LAU ID card: its photo is blurred and the number masked for everyone but the finder, security and the approved owner.
