@@ -45,6 +45,6 @@ Events published (`src/lib/events.js`): `post.closed`, `post.published`, `post.u
 
 ## In the demo
 1. Sign in as sara.k@lau.edu; the six-digit code is in server/outbox/ (development mailer).
-2. Open *New post, choose **Lost*, and first publish with the title empty to show the validation message.
+2. Open New post, choose Lost, and first publish with the title empty to show the validation message.
 3. Fill in "Wireless earbuds in a silver case", category Electronics, Riyad Nassar Library, today, and add a photo.
 4. Publish: the post is Open on the feed, and Smart Match compares it with the open found posts at once.
