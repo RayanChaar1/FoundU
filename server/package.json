@@ -12,6 +12,7 @@
     "db:reset": "node --env-file-if-exists=.env src/db/migrate.js --reset && node --env-file-if-exists=.env src/db/seed.js",
     "db:demo": "node --env-file-if-exists=.env src/db/demo.js",
     "test": "jest --runInBand",
+    "test:ci": "jest --runInBand --coverage",
     "idp": "node dev/idp.js",
     "smtp": "node dev/smtp.js",
     "perf:seed": "node --env-file-if-exists=.env perf/seed.js",
@@ -24,7 +25,20 @@
   "jest": {
     "testEnvironment": "node",
     "globalSetup": "./tests/globalSetup.js",
-    "globalTeardown": "./tests/globalTeardown.js"
+    "globalTeardown": "./tests/globalTeardown.js",
+    "collectCoverageFrom": [
+      "src/modules/**/service.js",
+      "src/modules/**/repository.js"
+    ],
+    "coverageReporters": [
+      "text-summary",
+      "json-summary"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "lines": 70
+      }
+    }
   },
   "dependencies": {
     "argon2": "^0.45.2",

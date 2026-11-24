@@ -88,6 +88,7 @@ Without SMTP settings, emails are written to `server/outbox/`.  To send them thr
 | `npm run dev` | Start the API (port 4000) and the client (port 5173) with live reload |
 | `npm test` | Run the server test suite against a separate `foundu_test` database |
 | `npm run lint` | Check the server and client code with ESLint (`eslint.config.js`); it must report no error before a pull request |
+| `npm run test:ci --workspace server` | Run the tests as the pipeline does, with the coverage of the business logic (service and repository files), which must stay at 70% of lines or more |
 | `npm run db:migrate` | Apply new migrations from `server/src/db/migrations/` |
 | `npm run db:seed` | Replace all data with the demo organizations, users and categories |
 | `npm run db:reset` | Drop every table, migrate again and seed |
@@ -154,5 +155,7 @@ Modules are discovered automatically, so a new module only adds files and never 
 3. Commit in small steps and push the branch.
 4. Open a pull request that references the issue (`Closes #12`) and lists the test cases it satisfies.
 5. Another member reviews the pull request before it is merged.  Nobody pushes to `main` directly.
+
+**Continuous integration.**  GitHub Actions ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs three checks on every pull request: **Lint** (ESLint on the server and the client), **Tests and coverage** (the server tests on PostgreSQL, failing under 70% line coverage of the business logic), and **Task reference** (the description names a GitHub issue or an OpenProject work package).  Lint and Tests and coverage are required by the ruleset of `main`, so a pull request that fails either cannot be merged; Task reference flags the pull request for the reviewer.
 
 Each test is named after its Phase III test case, for example `TC-FR-6.4-D`, so the test run maps one to one onto the Chapter 9 test suite.  Add a migration as a new numbered file; never edit a migration that is already on `main`.

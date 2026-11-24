@@ -1,0 +1,74 @@
+# Continuous integration (NFR-15.1, NFR-15.2, NFR-18.3).  Every pull request and every push to main runs ESLint
+# and the server test suite with coverage; "Lint" and "Tests and coverage" are required checks of the "Protect
+# Main" ruleset, so a pull request that fails either cannot be merged.  "Task reference" flags a pull request whose
+# description names no GitHub issue or OpenProject work package.
+name: CI
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+
+  test:
+    name: Tests and coverage
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://postgres@localhost:5432/foundu_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # Fails when a test fails or when the business logic (service and repository files) drops under 70% of lines
+      - run: npm run test:ci --workspace server
+
+  task:
+    name: Task reference
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: The description names an issue or a work package
+        env:
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          if printf '%s' "$BODY" | grep -Eiq '(#[0-9]+|/issues/[0-9]+|work_packages/[0-9]+|work package [0-9]+|WP ?[0-9]+)'; then
+            echo "Task reference found."
+          else
+            echo "::error::The pull request description names no task.  Add the GitHub issue (Closes #12, Refs #12) or the OpenProject work package."
+            exit 1
+          fi
