@@ -10,8 +10,8 @@ keeps the member who designed the case in Phase III.
 | Jean-Marie Agha | [jean-marie-agha.xlsx](jean-marie-agha.xlsx) | 74 | 68 | 0 | 0 | 6 |
 | Ramez Naba | [ramez-naba.xlsx](ramez-naba.xlsx) | 74 | 72 | 0 | 2 | 0 |
 | Adam Jaat | [adam-jaat.xlsx](adam-jaat.xlsx) | 74 | 56 | 0 | 18 | 0 |
-| Mohamad Moubarak | [mohamad-moubarak.xlsx](mohamad-moubarak.xlsx) | 74 | 66 | 3 | 5 | 0 |
-| **All** | | **420** | **385** | **3** | **26** | **6** |
+| Mohamad Moubarak | [mohamad-moubarak.xlsx](mohamad-moubarak.xlsx) | 74 | 69 | 3 | 2 | 0 |
+| **All** | | **420** | **388** | **3** | **23** | **6** |
 
 ## How the cases were run
 
@@ -19,6 +19,8 @@ keeps the member who designed the case in Phase III.
 - **Browser, API and tools on the laptop:** the scripts and checks named in the **Method** and **Notes** columns
   (load and scale scripts in `server/perf/`, axe-core, the fresh-clone README check), on a scratch database.
 - **Review:** the report, the diagrams, the repository settings and OpenProject, against the expected result.
+- **CI pipeline (GitHub Actions):** test pull requests #66, #67 and #68, opened against the pipeline of #65 and closed
+  without merging.
 
 ## Failed cases
 
@@ -41,10 +43,13 @@ generic error; fixed in #53 (merged), it now gets a clear 503 message.  The scal
 
 ## Cases not run or still to execute
 
-- **Not run (26):** the production setup of Appendix A (hosting, firewall, backups, monitoring), browsers the
+- **Not run (23):** the production setup of Appendix A (hosting, firewall, backups, monitoring), browsers the
   laptop does not have (NFR-8.1), and the review of the rules of use with LAU (NFR-23.1-V).  Each keeps its
   reason in **Notes**.
 - **To execute (6):** the usability test with participants (NFR-6.1 to 6.3).
 - TC-NFR-7-V passed on 23 November: axe-core found no violation, and every page was used with VoiceOver.
 - TC-NFR-21.1-V and -D passed on 24 November: release [v1.0.0](https://github.com/RayanChaar1/FoundU/releases/tag/v1.0.0)
   came 8 days before the deadline, and no High-priority case was failing when it was tagged.
+- TC-NFR-15.1-D, TC-NFR-15.2-D and TC-NFR-18.3-D passed on 24 November with the CI pipeline of #65: a lint error
+  (#66) and business-logic coverage of 64.94% (#67) failed required checks, so the merge was blocked, and a
+  description without a task (#68) failed the Task reference check.
