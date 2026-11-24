@@ -10,10 +10,10 @@ lists the missing names at the end.  Any accepted extension works (`.jpg`, `.png
 | `wallet.jpg` | Black leather wallet (drop-off desk) | A black wallet, closed |
 | `charger.jpg` | Phone charger with a USB-C cable (drop-off desk) | A black phone charger with its cable |
 | `umbrella.jpg` | Grey folding umbrella with a loop handle (returned) | A folded umbrella |
-| `bottle.jpg` | Blue water bottle (lost) | A dark blue bottle with stickers |
+| `bottle.jpg` | White water bottle with a grey lid (lost) | A water bottle on a table |
 | `keys.jpg` | Car key with a silver race-car keychain (lost, Byblos) | A car key on a keychain |
 | `backpack.jpg` | Black backpack (drop-off desk, Byblos) | A black backpack, closed |
-| `notebook.jpg` | Engineering notebook, green cover (found) | A green spiral notebook, closed |
+| `notebook.jpg` | University notebook, grey cover (found) | A spiral notebook, closed |
 | `laptop.jpg` | QR tag: Silver MacBook Air | A closed silver laptop |
 
 Rules for every photo:
