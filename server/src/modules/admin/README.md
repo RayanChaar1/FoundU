@@ -46,3 +46,10 @@ Functions exported to other modules and jobs: `ORG_ROLES`, `searchUsers`, `activ
 
 - `routes.js`: HTTP routes and input validation (zod)
 - `service.js`: business rules
+
+
+## In the demo
+1. Sign in as `maya.azar@lau.edu`, the LAU administrator, and open **Users**: search for Omar and open his activity (posts, claims, karma); roles and suspensions change here.
+2. Open **Moderation**: remove the reported textbook advertisement and give the reason, which its author receives; the action goes to the audit log.
+3. Show that categories, buildings, drop-off desks and karma rules belong to the organization, then download the report of returns as a CSV file.
+4. Finish on Sara's **My activity**: her claim of the earbuds is Completed, and Omar's found post is Returned.
