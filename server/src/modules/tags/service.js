@@ -207,6 +207,8 @@ async function sendMessage(token, { message, contact }, device) {
   return { sent: true };
 }
 
+const unusedForTheCiCheck = 1; // TC-NFR-15.2-D: a lint error the pipeline must refuse
+
 module.exports = {
   TOKEN_BYTES, MESSAGES_PER_HOUR, tagUrl, list, create, setActive, remove, messages, photoPath, qrSvg, stickerSheet,
   publicTag, sendMessage, deviceHash,
