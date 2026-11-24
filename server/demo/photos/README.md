@@ -24,3 +24,4 @@ Rules for every photo:
 
 Each member adds two photos from their own GitHub account, in a pull request linked to issue #18; the history of
 this folder shows who added each one.
+
