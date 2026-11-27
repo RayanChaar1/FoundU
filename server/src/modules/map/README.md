@@ -35,3 +35,4 @@ Functions exported to other modules and jobs: `markers`, `hotspots`, `HOTSPOT_DA
 2. Open the map: each pin is an open item, on the Beirut and Byblos campuses, placed at its building.
 3. Open *Drop-off points*: the Security Office in Nicol Hall holds the wallet, the charger and the ID card, with its opening hours.
 4. Open Sara's QR tags: the sticker of her MacBook opens a public page where a finder writes to her without seeing her name or email.
+Refs #6, #7, #12
