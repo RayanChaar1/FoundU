@@ -28,3 +28,10 @@ Functions exported to other modules and jobs: `markers`, `hotspots`, `HOTSPOT_DA
 
 - `routes.js`: HTTP routes and input validation (zod)
 - `service.js`: business rules
+
+## In the demo
+
+1. Search for "wallet", then filter by category and campus; an end date before the start date shows the date message.
+2. Open the map: each pin is an open item, on the Beirut and Byblos campuses, placed at its building.
+3. Open *Drop-off points*: the Security Office in Nicol Hall holds the wallet, the charger and the ID card, with its opening hours.
+4. Open Sara's QR tags: the sticker of her MacBook opens a public page where a finder writes to her without seeing her name or email.
