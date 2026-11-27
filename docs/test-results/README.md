@@ -4,14 +4,14 @@ The 420 Phase III test cases, in one sheet per designer.  Rayan El Chaar execute
 2026 on his laptop, and signed each executed row (**Executed by**, **Execution date**).  The **Designed by** column
 keeps the member who designed the case in Phase III.
 
-| Designer | File | Cases | Pass | Fail | Not run | To execute |
-| --- | --- | --- | --- | --- | --- | --- |
-| Rayan El Chaar | [rayan-el-chaar.xlsx](rayan-el-chaar.xlsx) | 124 | 123 | 0 | 1 | 0 |
-| Jean-Marie Agha | [jean-marie-agha.xlsx](jean-marie-agha.xlsx) | 74 | 68 | 0 | 0 | 6 |
-| Ramez Naba | [ramez-naba.xlsx](ramez-naba.xlsx) | 74 | 72 | 0 | 2 | 0 |
-| Adam Jaat | [adam-jaat.xlsx](adam-jaat.xlsx) | 74 | 56 | 0 | 18 | 0 |
-| Mohamad Moubarak | [mohamad-moubarak.xlsx](mohamad-moubarak.xlsx) | 74 | 69 | 3 | 2 | 0 |
-| **All** | | **420** | **388** | **3** | **23** | **6** |
+| Designer | File | Cases | Pass | Fail | Not run |
+| --- | --- | --- | --- | --- | --- |
+| Rayan El Chaar | [rayan-el-chaar.xlsx](rayan-el-chaar.xlsx) | 124 | 123 | 0 | 1 |
+| Jean-Marie Agha | [jean-marie-agha.xlsx](jean-marie-agha.xlsx) | 74 | 68 | 0 | 6 |
+| Ramez Naba | [ramez-naba.xlsx](ramez-naba.xlsx) | 74 | 72 | 0 | 2 |
+| Adam Jaat | [adam-jaat.xlsx](adam-jaat.xlsx) | 74 | 56 | 0 | 18 |
+| Mohamad Moubarak | [mohamad-moubarak.xlsx](mohamad-moubarak.xlsx) | 74 | 69 | 3 | 2 |
+| **All** | | **420** | **388** | **3** | **29** |
 
 ## How the cases were run
 
@@ -41,12 +41,13 @@ passed when run again keep their first failure in **Notes**.
 TC-NFR-21.2-D passed for signed-in users on its first run, but a new sign-in during the mail outage got a
 generic error; fixed in #53 (merged), it now gets a clear 503 message.  The scale results of NFR-14 are in [security-performance.md](../security-performance.md).
 
-## Cases not run or still to execute
+## Cases not run
 
-- **Not run (23):** the production setup of Appendix A (hosting, firewall, backups, monitoring), browsers the
-  laptop does not have (NFR-8.1), and the review of the rules of use with LAU (NFR-23.1-V).  Each keeps its
-  reason in **Notes**.
-- **To execute (6):** the usability test with participants (NFR-6.1 to 6.3).
+- **Not run (29):** the production setup of Appendix A (hosting, firewall, backups, monitoring), browsers the
+  laptop does not have (NFR-8.1), the review of the rules of use with LAU (NFR-23.1-V), and the usability test
+  with participants (NFR-6.1 to 6.3), which did not take place before the submission.  Each keeps its reason in
+  **Notes**.  The defect found while preparing the usability test (TC-NFR-6.2-D: no reason shown when a user
+  opens their own post) was fixed in #58.
 - TC-NFR-7-V passed on 23 November: axe-core found no violation, and every page was used with VoiceOver.
 - TC-NFR-21.1-V and -D passed on 24 November: release [v1.0.0](https://github.com/RayanChaar1/FoundU/releases/tag/v1.0.0)
   came 8 days before the deadline, and no High-priority case was failing when it was tagged.
