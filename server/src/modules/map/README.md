@@ -29,7 +29,7 @@ Functions exported to other modules and jobs: `markers`, `hotspots`, `HOTSPOT_DA
 - `routes.js`: HTTP routes and input validation (zod)
 - `service.js`: business rules
 
-- ## In the demo
+## In the demo
 
 1. Search for "wallet", then filter by category and campus; an end date before the start date shows the date message.
 2. Open the map: each pin is an open item, on the Beirut and Byblos campuses, placed at its building.
